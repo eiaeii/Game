@@ -9,10 +9,9 @@ CLog::~CLog()
 
 bool CLog::Init(const char* pszFileName)
 {
-	pszFileName;
-	/*if (pszFileName != nullptr && strlen(pszFileName) > 1)
+	if (pszFileName != nullptr && strlen(pszFileName) > 1)
 	m_strProcessName = pszFileName;
-	else*/
+	else
 	{
 		char strProcessPath[256] = { 0 };
 
@@ -89,6 +88,8 @@ void CLog::SaveLogEx(unsigned char btLogType, const char * pszFunction, unsigned
 	strcat_s(szTemLogFormat, ss.str().c_str());
 
 	SaveLogToCache(btLogType, szTemLogFormat, strlen(szTemLogFormat));
+
+	printf_s(szTemLogFormat);
 }
 
 void CLog::FlushAllLogToFile()

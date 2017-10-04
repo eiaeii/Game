@@ -1,4 +1,5 @@
 #include "LuaEngine.h"
+#include <typeinfo>
 
 bool CLuaEngine::Create()
 {
@@ -15,8 +16,9 @@ bool CLuaEngine::Create()
 	luaopen_table(m_pLuaState);
 	luaopen_io(m_pLuaState);
 	luaopen_os(m_pLuaState);
-	luaopen_package(m_pLuaState);
-	luaopen_bit(m_pLuaState);
+	//luaopen_package(m_pLuaState);
+	//luaopen_debug(m_pLuaState);
+	//luaopen_bit(m_pLuaState);
 	luaopen_jit(m_pLuaState);
 	luaopen_ffi(m_pLuaState);
 	luaL_openlibs(m_pLuaState);
@@ -24,25 +26,23 @@ bool CLuaEngine::Create()
 	return true;
 }
 
-bool CLuaEngine::LoadLuaFile(const char* szLuaFileName)
+bool CLuaEngine::LoadLuaFile(const char *szLuaFileName)
 {
 	if (szLuaFileName == NULL)
 	{
 		return false;
 	}
 
-	int top = lua_gettop(m_pLuaState);
+	int nTop = lua_gettop(m_pLuaState);
 	try
 	{
-
-		//int nResult = dofile(m_pLuaState, szLuaFileName);
 		int nResult = luaL_loadfile(m_pLuaState, szLuaFileName);
 		if (nResult == 0)
 		{
 			nResult = lua_pcall(m_pLuaState, 0, 0, 0);
 			if (nResult == 0)
 			{
-				lua_settop(m_pLuaState, top);
+				lua_settop(m_pLuaState, nTop);
 
 				return true;
 			}
@@ -56,7 +56,7 @@ bool CLuaEngine::LoadLuaFile(const char* szLuaFileName)
 	const char* pszErrInfor = lua_tostring(m_pLuaState, -1);
 	SaveAssertLog(pszErrInfor);
 
-	lua_settop(m_pLuaState, top);
+	lua_settop(m_pLuaState, nTop);
 
 	return false;
 }

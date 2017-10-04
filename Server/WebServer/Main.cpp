@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include "Log.h"
+#include "LuaEngine.h"
 
 void StarServer(int argc, char *argv[])
 {
@@ -42,6 +43,18 @@ void StarServer(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
-	StarServer(argc, argv);
+	if (!CLog::Instance()->Init("WebServer"))
+	{
+		printf("[Error]WebServer LogServer Failed! Function:%s, Line:%d\n", __FUNCTION__, __LINE__);
+		return 1;
+	}
+
+	CLuaEngine::Instance()->Create();
+	CLuaEngine::Instance()->LoadLuaFile("Main.lua");
+	CLuaEngine::Instance()->RunLuaFunction("MyTest", 1, "12", std::string("123"));
+	//StarServer(argc, argv);
+	argc;
+	argv;
+	system("pause");
 	return 0;
 }
