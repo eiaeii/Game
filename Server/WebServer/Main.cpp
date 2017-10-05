@@ -7,7 +7,7 @@
 
 void StarServer(int argc, char *argv[])
 {
-	if (!CLog::Instance()->Init("WebServer"))
+	if (!CLog::Instance()->Init())
 	{
 		printf("[Error]WebServer LogServer Failed! Function:%s, Line:%d\n", __FUNCTION__, __LINE__);
 		return;
@@ -43,14 +43,16 @@ void StarServer(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
-	if (!CLog::Instance()->Init("WebServer"))
+	if (!CLog::Instance()->Init())
 	{
 		printf("[Error]WebServer LogServer Failed! Function:%s, Line:%d\n", __FUNCTION__, __LINE__);
 		return 1;
 	}
 
 	CLuaEngine::Instance()->Create();
-	CLuaEngine::Instance()->LoadLuaFile("Main.lua");
+
+	CLuaEngine::Instance()->SetLuaPath("Scripts/WebServer");
+	CLuaEngine::Instance()->LoadLuaFile("Scripts/WebServer/Main.lua");
 	CLuaEngine::Instance()->RunLuaFunction("MyTest", 1, "12", std::string("123"));
 	//StarServer(argc, argv);
 	argc;

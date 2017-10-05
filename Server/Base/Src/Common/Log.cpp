@@ -1,4 +1,5 @@
 #include "Log.h"
+#include <filesystem>
 
 CLog::~CLog()
 {
@@ -7,35 +8,12 @@ CLog::~CLog()
 };
 
 
-bool CLog::Init(const char* pszFileName)
+bool CLog::Init()
 {
-	if (pszFileName != nullptr && strlen(pszFileName) > 1)
-	m_strProcessName = pszFileName;
-	else
-	{
-		char strProcessPath[256] = { 0 };
+	std::experimental::filesystem::create_directory("Log");
 
-#ifdef _LINUX_
-		if (readlink("/proc/self/exe", strProcessPath, sizeof(strProcessPath)) <= 0)
-		{
-			return false;
-		}
-		char *strProcessName = strrchr(strProcessPath, '/');
-		++strProcessName;
-		strchr(strProcessName, '.')[0] = 0;
-		m_strProcessName = strProcessName;
-
-#endif // _LINUX_
-
-#ifdef _WINDOWS_
-		char *pPath = nullptr;
-		_get_pgmptr(&pPath);
-		char *strProcessName = strrchr(pPath, '\\');
-		++strProcessName;
-		strchr(strProcessName, '.')[0] = 0;
-		m_strProcessName = strProcessName;
-#endif // _WINDOWS_
-	}
+	auto curPath = std::experimental::filesystem::current_path();
+	m_strProcessName = curPath.stem().string();
 
 	m_vecLogFile.resize(Log_Num);
 	m_vecLogFile[Log_Debug] = "./Log/[Debug]";
@@ -47,6 +25,7 @@ bool CLog::Init(const char* pszFileName)
 	for (size_t i = 0; i < Log_Num; ++i)
 	{
 		m_LogSaveFlag[i] = 1;
+		m_LogPrintFlag[i] = 1;
 	}
 
 #ifndef _DEBUG
@@ -87,9 +66,10 @@ void CLog::SaveLogEx(unsigned char btLogType, const char * pszFunction, unsigned
 
 	strcat_s(szTemLogFormat, ss.str().c_str());
 
-	SaveLogToCache(btLogType, szTemLogFormat, strlen(szTemLogFormat));
+	if (m_LogPrintFlag[btLogType])
+		printf_s(szTemLogFormat);
 
-	printf_s(szTemLogFormat);
+	SaveLogToCache(btLogType, szTemLogFormat, strlen(szTemLogFormat));
 }
 
 void CLog::FlushAllLogToFile()

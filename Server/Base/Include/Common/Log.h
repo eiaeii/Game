@@ -8,6 +8,7 @@
 #include <string.h>
 #include <thread>
 #include <sstream>
+#include <filesystem>
 
 #ifndef _Log_HPP
 #define _Log_HPP
@@ -30,7 +31,7 @@ public:
 public:
 	~CLog();
 
-	bool Init(const char* pszFileName);
+	bool Init();
 
 	void SaveLogEx(unsigned char btLogType, const char * pszFunction, unsigned long unLine, std::thread::id threadID, const char * pszLog, ...);
 	

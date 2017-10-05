@@ -23,8 +23,62 @@ extern "C"
 class CLuaEngine : public CSingleton<CLuaEngine>
 {
 public:
+
 	bool Create();
+
 	bool LoadLuaFile(const char *szLuaFileName);
+
+	template<typename... T>
+	inline bool CLuaEngine::RunLuaFunction(const char *szFunctionName, const T&... args)
+	{
+		int nTop = lua_gettop(m_pLuaState);
+		std::string strError = "[Lua]";
+
+		try
+		{
+			lua_getglobal(m_pLuaState, szFunctionName);
+			if (!lua_isfunction(m_pLuaState, -1))
+			{
+				strError = strError + "没有找到函数：" + szFunctionName;
+				SaveAssertLog(strError.c_str());
+
+				lua_settop(m_pLuaState, nTop);
+				return false;
+			}
+
+			int nInNum = 0;
+
+			auto funcPushValue = [&](auto & value)
+			{
+				++nInNum;
+				PushValue(value);
+			};
+
+			auto temp = { 0, (funcPushValue(args), 0)... , 0 };
+
+			lua_pcall(m_pLuaState, nInNum, 0, 0);
+
+			lua_settop(m_pLuaState, nTop);
+
+			return true;
+		}
+		catch (...)
+		{
+
+		}
+
+		const char* pszErrInfor = lua_tostring(m_pLuaState, -1);
+		strError += pszErrInfor;
+		SaveAssertLog(strError.c_str());
+
+		lua_settop(m_pLuaState, nTop);
+
+		return false;
+	}
+
+	void SetLuaPath(const char* path);
+
+private:
 	
 	void inline PushValue(const bool &value)
 	{
@@ -101,52 +155,7 @@ public:
 		lua_pushstring(m_pLuaState, strValue.c_str());
 	}
 
-	template<typename... T>
-	inline bool CLuaEngine::RunLuaFunction(const char *szFunctionName, const T&... args)
-	{
-		int nTop = lua_gettop(m_pLuaState);
-		std::string strError;
-
-		try
-		{
-			lua_getglobal(m_pLuaState, szFunctionName);
-			if (!lua_isfunction(m_pLuaState, -1))
-			{
-				const char* pszErrInfor = lua_tostring(m_pLuaState, -1);
-				SaveAssertLog(pszErrInfor);
-
-				lua_settop(m_pLuaState, nTop);
-				return false;
-			}
-
-			int nInNum = 0;
-
-			auto funcPushValue = [&](auto & value)
-			{
-				++nInNum;
-				PushValue(value);
-			};
-
-			auto temp = { 0, (funcPushValue(args), 0)... , 0 };
-
-			lua_pcall(m_pLuaState, nInNum, 0, 0);
-
-			lua_settop(m_pLuaState, nTop);
-
-			return true;
-		}
-		catch (...)
-		{
-
-		}
-		
-		const char* pszErrInfor = lua_tostring(m_pLuaState, -1);
-		SaveAssertLog(pszErrInfor);
-
-		lua_settop(m_pLuaState, nTop);
-
-		return false;
-	}
+	void AddSearchPath(const char* path);
 
 private:
 	lua_State *m_pLuaState;
