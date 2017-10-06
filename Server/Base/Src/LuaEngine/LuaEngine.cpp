@@ -53,7 +53,7 @@ bool CLuaEngine::LoadLuaFile(const char *szLuaFileName)
 
 	}
 
-	std::string strError = "[Lua]";
+	std::string strError = "¡¾Lua¡¿";
 	const char* pszErrInfor = lua_tostring(m_pLuaState, -1);
 	strError += pszErrInfor;
 	SaveAssertLog(strError.c_str());

@@ -32,7 +32,7 @@ public:
 	inline bool CLuaEngine::RunLuaFunction(const char *szFunctionName, const T&... args)
 	{
 		int nTop = lua_gettop(m_pLuaState);
-		std::string strError = "[Lua]";
+		std::string strError = "¡¾Lua¡¿";
 
 		try
 		{

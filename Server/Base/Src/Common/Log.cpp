@@ -18,10 +18,7 @@ bool CLog::Init()
 	m_vecLogFile.resize(Log_Num);
 	m_vecLogFile[Log_Debug] = "./Log/[Debug]";
 	m_vecLogFile[Log_Assert] = "./Log/[Assert]";
-	m_vecLogFile[Log_Player] = "./Log/[Player]";
-	m_vecLogFile[Log_Mail] = "./Log/[Mail]";
-	m_vecLogFile[Log_Recharge] = "./Log/[Recharge]";
-
+	
 	for (size_t i = 0; i < Log_Num; ++i)
 	{
 		m_LogSaveFlag[i] = 1;
@@ -66,8 +63,22 @@ void CLog::SaveLogEx(unsigned char btLogType, const char * pszFunction, unsigned
 
 	strcat_s(szTemLogFormat, ss.str().c_str());
 
-	if (m_LogPrintFlag[btLogType])
-		printf_s(szTemLogFormat);
+	auto colorFunc = [&](unsigned char btType)
+	{
+		if (m_LogPrintFlag[btType])
+		{
+#ifdef _LINUX_
+#else
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), m_windowColor[btType]);
+#endif // !_LINUX
+			printf_s(szTemLogFormat);
+
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_GREEN);
+		}
+
+	};
+
+	colorFunc(btLogType);
 
 	SaveLogToCache(btLogType, szTemLogFormat, strlen(szTemLogFormat));
 }
