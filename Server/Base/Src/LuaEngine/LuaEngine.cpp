@@ -36,11 +36,11 @@ bool CLuaEngine::LoadLuaFile(const char *szLuaFileName)
 	int nTop = lua_gettop(m_pLuaState);
 	try
 	{
-		int nResult = luaL_loadfile(m_pLuaState, szLuaFileName);
-		if (0 == nResult)
+		int nErrorCode = luaL_loadfile(m_pLuaState, szLuaFileName);
+		if (0 == nErrorCode)
 		{
-			nResult = lua_pcall(m_pLuaState, 0, 0, 0);
-			if (0 == nResult)
+			nErrorCode = lua_pcall(m_pLuaState, 0, 0, 0);
+			if (0 == nErrorCode)
 			{
 				lua_settop(m_pLuaState, nTop);
 

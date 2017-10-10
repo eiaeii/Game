@@ -4,9 +4,11 @@
 ** 描述：Lua引擎
 ************************************************************************/
 
+#ifndef _LUAENGINE_H
+#include <array>
+#include <iostream>
 #include "Singleton.hpp"
 #include "Log.h"
-
 #ifdef __cplusplus
 extern "C"
 {
@@ -17,8 +19,144 @@ extern "C"
 }
 #endif // __cplusplus
 
-#ifndef _LUAENGINE_H
 #define _LUAENGINE_H
+
+struct LuaParam
+{
+	LuaParam()
+		:m_btType(LUA_TNIL)
+	{
+	}
+
+	explicit LuaParam(double value)
+		:m_btType(LUA_TNUMBER), m_value(value)
+	{
+	}
+
+	explicit LuaParam(const char *value)
+		:m_btType(LUA_TSTRING), m_value(value)
+	{
+	}
+
+	~LuaParam() {}
+
+	operator char()
+	{
+		return (char)m_value.num;
+	}
+
+	operator unsigned char()
+	{
+		return (unsigned char)m_value.num;
+	}
+
+	operator short()
+	{
+		return (short)m_value.num;
+	}
+
+	operator unsigned short()
+	{
+		return (unsigned short)m_value.num;
+	}
+
+	operator int()
+	{
+		return (int)m_value.num;
+	}
+
+	operator unsigned int()
+	{
+		return (unsigned int)m_value.num;
+	}
+
+	operator float()
+	{
+		return (float)m_value.num;
+	}
+
+	operator double()
+	{
+		return m_value.num;
+	}
+
+	operator bool()
+	{
+		return m_value.num > -FLT_EPSILON && m_value.num < FLT_EPSILON;
+	}
+
+	operator const char*()
+	{
+		return m_value.str.c_str();
+	}
+
+	operator std::string()
+	{
+		return m_value.str;
+	}
+
+	unsigned char GetValueType()
+	{
+		return m_btType;
+	}
+
+	void operator = (double value)
+	{
+		m_btType = LUA_TNUMBER;
+		m_value.num = value;
+	}
+
+	void operator = (const char *value)
+	{
+		m_btType = LUA_TSTRING;
+		m_value.str = value;
+	}
+
+	friend std::ostream & operator << (std::ostream &out, const LuaParam &value)
+	{
+		switch (value.m_btType)
+		{
+		case LUA_TNUMBER:
+			out << value.m_value.num;
+			break;
+		case LUA_TSTRING:
+			out << value.m_value.str;
+			break;
+		default:
+			out << "未初始化！";
+			break;
+		}
+
+		return out;
+	}
+
+private:
+	unsigned char m_btType;
+
+	union Value
+	{
+		Value() :num(0.0f), str("")
+		{
+
+		}
+
+		Value(double value) :num(value)
+		{
+
+		}
+
+		Value(const char *value) :str(value)
+		{
+
+		}
+
+		~Value() {}
+
+		double num;
+		std::string str;
+
+	}m_value;
+};
 
 class CLuaEngine : public CSingleton<CLuaEngine>
 {
@@ -56,11 +194,123 @@ public:
 
 			auto temp = { 0, (funcPushValue(args), 0)... , 0 };
 
-			lua_pcall(m_pLuaState, nInNum, 0, 0);
+			int nErrorCode = lua_pcall(m_pLuaState, nInNum, nResultCount, 0);
+			if (0 == nErrorCode)
+			{
+				if (nResultCount > 0)
+					for (int i = 0; i < nResultCount; ++i)
+					{
+						auto nIndex = -nResultCount + i;
+						auto nType = lua_type(m_pLuaState, nIndex);
+						switch (nType)
+						{
+						case LUA_TNUMBER:
+							vecResult.emplace_back(lua_tonumber(m_pLuaState, nIndex));
+							break;
+						case LUA_TBOOLEAN:
+							vecResult.emplace_back(0 != lua_toboolean(m_pLuaState, nIndex));
+							break;
+						case LUA_TSTRING:
+							vecResult.emplace_back(lua_tostring(m_pLuaState, nIndex));
+							break;
+						default:
+							char szError[64] = { 0 };
+							sprintf_s(szError, sizeof(szError), "【Lua】未支持的返回值类型，类型ID：%d", nType);
+							SaveAssertLog(szError);
+							vecResult.emplace_back(0);
+							break;
+						}
+					}
 
-			lua_settop(m_pLuaState, nTop);
+				lua_settop(m_pLuaState, nTop);
+				return true;
+			}
 
-			return true;
+		}
+		catch (...)
+		{
+
+		}
+
+		const char* pszErrInfor = lua_tostring(m_pLuaState, -1);
+		strError += pszErrInfor;
+		SaveAssertLog(strError.c_str());
+
+		lua_settop(m_pLuaState, nTop);
+
+		return false;
+	}
+
+	template<size_t N, typename... T>
+	inline bool CLuaEngine::RunLuaFunctionReturnArray(const char *szFunctionName, std::array<LuaParam, N> &arrResult, const T&... args)
+	{
+		int nTop = lua_gettop(m_pLuaState);
+		std::string strError = "【Lua】";
+
+		try
+		{
+			lua_getglobal(m_pLuaState, szFunctionName);
+			if (!lua_isfunction(m_pLuaState, -1))
+			{
+				strError = strError + "没有找到函数：" + szFunctionName;
+				SaveAssertLog(strError.c_str());
+
+				lua_settop(m_pLuaState, nTop);
+				return false;
+			}
+
+			int nInNum = 0;
+
+			auto funcPushValue = [&](auto & value)
+			{
+				++nInNum;
+				PushValue(value);
+			};
+
+			auto temp = { 0, (funcPushValue(args), 0)... , 0 };
+
+			int nErrorCode = lua_pcall(m_pLuaState, nInNum, N, 0);
+			if (0 == nErrorCode)
+			{
+				int nCount = N;
+				if (nCount <= 0)
+				{
+					lua_settop(m_pLuaState, nTop);
+					return true;
+				}
+
+				for (int i = 0; i < nCount; ++i)
+				{
+					auto nType = lua_type(m_pLuaState, -nCount+i);
+					switch (nType)
+					{
+					case LUA_TNUMBER:
+						arrResult[i] = lua_tonumber(m_pLuaState, -nCount + i);
+						break;
+					case LUA_TBOOLEAN:
+						arrResult[i] = lua_toboolean(m_pLuaState, -nCount + i);
+						break;
+					case LUA_TSTRING:
+						arrResult[i] = lua_tostring(m_pLuaState, -nCount + i);
+						break;
+					case LUA_TNIL:
+						lua_touserdata(m_pLuaState, -nCount + i);
+						arrResult[i] = 0.0f;
+						break;
+					default:
+						char szError[64] = { 0 };
+						sprintf_s(szError, sizeof(szError), "【Lua】未支持的返回值类型，类型ID：%d", nType);
+						SaveAssertLog(szError);
+						lua_touserdata(m_pLuaState, -nCount + i);
+						arrResult[i] = 0.0f;
+						break;
+					}
+				}
+
+				lua_settop(m_pLuaState, nTop);
+				return true;
+			}
+			
 		}
 		catch (...)
 		{
