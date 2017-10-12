@@ -4,7 +4,6 @@
 #include "Lock.hpp"
 #include "Log.h"
 #include "Singleton.hpp"
-#include "IThread.h"
 
 class CLuaServer : public CSingleton<CLuaServer>
 {

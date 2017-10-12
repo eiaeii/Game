@@ -1,18 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Kernel">
-      <UniqueIdentifier>{ecf0cfa9-1504-4fc2-badc-34b5f23b1760}</UniqueIdentifier>
+    <Filter Include="API">
+      <UniqueIdentifier>{36e01c77-31a9-4f25-8294-f24d8fed077b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="LuaServer.cpp">
-      <Filter>Kernel</Filter>
-    </ClCompile>
+    <ClInclude Include="API\Define.h">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="API\API.h">
+      <Filter>API</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LuaServer.h">
-      <Filter>Kernel</Filter>
-    </ClInclude>
+    <ClCompile Include="API\API.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

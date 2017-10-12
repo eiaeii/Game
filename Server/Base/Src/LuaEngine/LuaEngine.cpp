@@ -1,7 +1,6 @@
 #include "LuaEngine.h"
-#include <typeinfo>
 
-bool CLuaEngine::Create()
+bool CLuaEngine::Init()
 {
 	m_pLuaState = lua_open();
 	if (nullptr == m_pLuaState)
@@ -22,6 +21,8 @@ bool CLuaEngine::Create()
 	luaopen_jit(m_pLuaState);
 	luaopen_ffi(m_pLuaState);
 	luaL_openlibs(m_pLuaState);
+
+	SetLuaSearchPath();
 
 	return true;
 }
@@ -73,14 +74,10 @@ void CLuaEngine::AddSearchPath(const char* path)
 	lua_pop(m_pLuaState, 2);                                                /* L: - */
 }
 
-void CLuaEngine::SetLuaPath(const char* path)
+void CLuaEngine::SetLuaSearchPath()
 {
 	auto curPath = std::experimental::filesystem::current_path().string();
-	curPath += "/";
-	curPath += path;
-
-	AddSearchPath(curPath.c_str());
-
+	
 	for (auto p : std::experimental::filesystem::recursive_directory_iterator(curPath))
 	{
 		if (std::experimental::filesystem::is_directory(p))

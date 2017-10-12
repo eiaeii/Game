@@ -162,12 +162,12 @@ class CLuaEngine : public CSingleton<CLuaEngine>
 {
 public:
 
-	bool Create();
+	bool Init();
 
 	bool LoadLuaFile(const char *szLuaFileName);
 
 	template<typename... T>
-	inline bool CLuaEngine::RunLuaFunction(const char *szFunctionName, const T&... args)
+	inline bool RunLuaFunction(const char *szFunctionName, const T&... args)
 	{
 		int nTop = lua_gettop(m_pLuaState);
 		std::string strError = "【Lua】";
@@ -194,34 +194,9 @@ public:
 
 			auto temp = { 0, (funcPushValue(args), 0)... , 0 };
 
-			int nErrorCode = lua_pcall(m_pLuaState, nInNum, nResultCount, 0);
+			int nErrorCode = lua_pcall(m_pLuaState, nInNum, 0, 0);
 			if (0 == nErrorCode)
 			{
-				if (nResultCount > 0)
-					for (int i = 0; i < nResultCount; ++i)
-					{
-						auto nIndex = -nResultCount + i;
-						auto nType = lua_type(m_pLuaState, nIndex);
-						switch (nType)
-						{
-						case LUA_TNUMBER:
-							vecResult.emplace_back(lua_tonumber(m_pLuaState, nIndex));
-							break;
-						case LUA_TBOOLEAN:
-							vecResult.emplace_back(0 != lua_toboolean(m_pLuaState, nIndex));
-							break;
-						case LUA_TSTRING:
-							vecResult.emplace_back(lua_tostring(m_pLuaState, nIndex));
-							break;
-						default:
-							char szError[64] = { 0 };
-							sprintf_s(szError, sizeof(szError), "【Lua】未支持的返回值类型，类型ID：%d", nType);
-							SaveAssertLog(szError);
-							vecResult.emplace_back(0);
-							break;
-						}
-					}
-
 				lua_settop(m_pLuaState, nTop);
 				return true;
 			}
@@ -242,7 +217,7 @@ public:
 	}
 
 	template<size_t N, typename... T>
-	inline bool CLuaEngine::RunLuaFunctionReturnArray(const char *szFunctionName, std::array<LuaParam, N> &arrResult, const T&... args)
+	inline bool RunLuaFunctionReturnArray(const char *szFunctionName, std::array<LuaParam, N> &arrResult, const T&... args)
 	{
 		int nTop = lua_gettop(m_pLuaState);
 		std::string strError = "【Lua】";
@@ -326,8 +301,6 @@ public:
 		return false;
 	}
 
-	void SetLuaPath(const char* path);
-
 private:
 	
 	void inline PushValue(const bool &value)
@@ -406,6 +379,8 @@ private:
 	}
 
 	void AddSearchPath(const char* path);
+
+	void SetLuaSearchPath();
 
 private:
 	lua_State *m_pLuaState;
