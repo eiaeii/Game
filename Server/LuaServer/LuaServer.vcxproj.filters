@@ -6,9 +6,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="API\Define.h">
-      <Filter>API</Filter>
-    </ClInclude>
     <ClInclude Include="API\API.h">
       <Filter>API</Filter>
     </ClInclude>
