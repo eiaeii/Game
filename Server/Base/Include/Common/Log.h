@@ -47,8 +47,8 @@ private:
 private:
 	std::vector<std::string> m_vecLogFile;
 	std::string m_strProcessName;
-	unsigned char m_LogSaveFlag[Log_Num] = { 0 };
-	unsigned char m_LogPrintFlag[Log_Num] = { 0 };
+	std::atomic_uchar m_LogSaveFlag[Log_Num] = { 0 };
+	std::atomic_uchar m_LogPrintFlag[Log_Num] = { 0 };
 	std::atomic_char* m_LogCache[Log_Num] = { nullptr };
 	size_t m_LogPos[Log_Num] = { 0 };
 

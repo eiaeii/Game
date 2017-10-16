@@ -4,10 +4,16 @@
     <Filter Include="API">
       <UniqueIdentifier>{36e01c77-31a9-4f25-8294-f24d8fed077b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{a75ddf6b-e535-4d0b-a353-9236112bb471}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="API\API.h">
       <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ExportDefine\ExportStruct.h">
+      <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

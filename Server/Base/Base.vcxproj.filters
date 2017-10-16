@@ -7,6 +7,9 @@
     <Filter Include="LuaEngine">
       <UniqueIdentifier>{110395d6-6802-4a08-b5ff-4f9d03104441}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Web">
+      <UniqueIdentifier>{bbcf0b5f-ffed-4b24-a40a-fb8bfbdefa1f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Common\TimeManager.cpp">
@@ -34,6 +37,15 @@
     </ClInclude>
     <ClInclude Include="Include\LuaEngine\LuaEngine.h">
       <Filter>LuaEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Common\Singleton.hpp">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Common\CommonDefine.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Common\Lock.hpp">
+      <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

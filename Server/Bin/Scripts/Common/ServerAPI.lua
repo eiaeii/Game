@@ -1,5 +1,4 @@
-local ffi = require "ffi"
-ServerAPI = ffi.load("LuaServer")
 ffi.cdef[[
 	void MyAPITest();
+	void SendMsgToGBServer(struct Msg_Goods_WEB2GB msg);
 ]]

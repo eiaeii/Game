@@ -25,8 +25,11 @@
     <ClCompile Include="Src\LuaEngine\LuaEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Common\CommonDefine.h" />
     <ClInclude Include="Include\Common\IThread.h" />
+    <ClInclude Include="Include\Common\Lock.hpp" />
     <ClInclude Include="Include\Common\Log.h" />
+    <ClInclude Include="Include\Common\Singleton.hpp" />
     <ClInclude Include="Include\Common\TimeManager.h" />
     <ClInclude Include="Include\LuaEngine\LuaEngine.h" />
   </ItemGroup>
@@ -106,7 +109,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <AdditionalIncludeDirectories>Include/Common;Include/LuaEngine;../ThirdPart/LuaJIT/src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Include/Common;Include/Web;Include/LuaEngine;../ThirdPart/LuaJIT/src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -128,7 +131,7 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <AdditionalIncludeDirectories>Include/Common;Include/LuaEngine;../ThirdPart/LuaJIT/src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Include/Common;Include/Web;Include/LuaEngine;../ThirdPart/LuaJIT/src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -152,7 +155,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <AdditionalIncludeDirectories>Include/Common;Include/LuaEngine;../ThirdPart/LuaJIT/src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Include/Common;Include/Web;Include/LuaEngine;../ThirdPart/LuaJIT/src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -178,7 +181,7 @@
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <AdditionalIncludeDirectories>Include/Common;Include/LuaEngine;../ThirdPart/LuaJIT/src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Include/Common;Include/Web;Include/LuaEngine;../ThirdPart/LuaJIT/src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

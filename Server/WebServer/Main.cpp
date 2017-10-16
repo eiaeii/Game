@@ -13,18 +13,6 @@ void StarServer(int argc, char *argv[])
 		return;
 	}
 
-	if (!CWebServer::Instance()->InitServer(argc, argv))
-	{
-		SaveAssertLog("WebServer ³õÊ¼»¯Ê§°Ü£¡ Function:%s, Line:%d", __FUNCTION__, __LINE__);
-		return;
-	}
-
-	if (!CWebServer::Instance()->Start())
-	{
-		SaveAssertLog("WebServer Æô¶¯Ê§°Ü£¡ Function:%s, Line:%d", __FUNCTION__, __LINE__);
-		return;
-	}
-
 	if (!CLuaEngine::Instance()->Init())
 	{
 		SaveAssertLog("LuaÒýÇæ ³õÊ¼»¯Ê§°Ü£¡ Function:%s, Line:%d", __FUNCTION__, __LINE__);
@@ -37,8 +25,20 @@ void StarServer(int argc, char *argv[])
 		return;
 	}
 
-	printf_s("WebServer Æô¶¯³É¹¦£¡\n");
+	if (!CWebServer::Instance()->InitServer(argc, argv))
+	{
+		SaveAssertLog("WebServer ³õÊ¼»¯Ê§°Ü£¡ Function:%s, Line:%d", __FUNCTION__, __LINE__);
+		return;
+	}
 
+	if (!CWebServer::Instance()->Start())
+	{
+		SaveAssertLog("WebServer Æô¶¯Ê§°Ü£¡ Function:%s, Line:%d", __FUNCTION__, __LINE__);
+		return;
+	}
+
+	printf_s("WebServer Æô¶¯³É¹¦£¡\n");
+	
 	std::string strCMD;
 	while (true)
 	{
@@ -54,5 +54,6 @@ void StarServer(int argc, char *argv[])
 int main(int argc, char *argv[])
 {
 	StarServer(argc, argv);
+	system("pause");
 	return 0;
 }

@@ -11,9 +11,7 @@ bool IThread::Start()
 	if (ThreadStatus::THREAD_STATUS_READY != m_btStatus)
 		return false;
 
-	m_thread = std::thread(ThreadFunction, this);
-
-	m_thread.detach();
+	std::thread(ThreadFunction, this).detach();
 
 	return true;
 }

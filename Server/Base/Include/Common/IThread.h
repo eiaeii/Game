@@ -58,7 +58,6 @@ private:
 	std::thread::id m_thID;
 	std::atomic<ThreadStatus> m_btStatus = ThreadStatus::THREAD_STATUS_READY;
 	std::chrono::milliseconds m_sleepTime = std::chrono::milliseconds(1);
-	std::thread m_thread;
 };
 
 #endif // _Thread_HPP
