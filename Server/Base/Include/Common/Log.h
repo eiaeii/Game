@@ -2,7 +2,6 @@
 #include "Singleton.hpp"
 #include <string>
 #include <atomic>
-#include "CommonDefine.h"
 #include "TimeManager.h"
 #include <string.h>
 #include <thread>

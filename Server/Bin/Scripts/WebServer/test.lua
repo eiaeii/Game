@@ -1,8 +1,10 @@
+local ffi = require "ffi"
+
 function MyTest()
-	--ServerAPI.MyAPITest()
+	ffi.C.MyAPITest() 
 	local msg = ffi.new("struct Msg_Goods_WEB2GB")
 	msg.nGoodsID = 10086
 	msg.nNum = 123
-	ServerAPI.SendMsgToGBServer(msg)
-	 
+	ffi.C.SendMsgToGBServer(msg)
+	
 end

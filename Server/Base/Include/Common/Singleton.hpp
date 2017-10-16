@@ -1,8 +1,8 @@
-/******************************************************************************
-* 版权：
-* 作者：何水大
-* 说明：饿汉模式的单例模版，线程安全
-******************************************************************************/
+/***********************************************************************
+** 作者：何水大(765865368@qq.com)
+** 时间：2017年10月16日
+** 描述：单例模式
+************************************************************************/
 
 #ifndef _Singleton_HPP
 #define _Singleton_HPP
@@ -13,6 +13,9 @@ class CSingleton
 public:
 	static T* Instance()
 	{
+		if (nullptr == m_spInstance)
+			m_spInstance = new T;
+
 		return m_spInstance;
 	}
 
@@ -35,6 +38,6 @@ private:
 	static T* m_spInstance;
 };
 
-template<typename T, bool mustDelete> T* CSingleton<T, mustDelete>::m_spInstance = new T;
+template<typename T, bool mustDelete> T* CSingleton<T, mustDelete>::m_spInstance = nullptr;
 
 #endif // _Singleton_HPP

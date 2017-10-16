@@ -41,9 +41,6 @@
     <ClInclude Include="Include\Common\Singleton.hpp">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Common\CommonDefine.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="Include\Common\Lock.hpp">
       <Filter>Common</Filter>
     </ClInclude>

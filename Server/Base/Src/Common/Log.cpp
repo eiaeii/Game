@@ -4,7 +4,10 @@
 CLog::~CLog()
 {
 	for (short i = 0; i < Log_Num; ++i)
-		SAFE_DELETE_ARRAY(m_LogCache[i]);
+	{
+		delete[] m_LogCache[i];
+		m_LogCache[i] = nullptr;
+	}
 };
 
 

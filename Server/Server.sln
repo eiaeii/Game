@@ -4,13 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WebServer", "WebServer\WebServer.vcxproj", "{7BA3BA5A-4A82-4C6B-A939-57485473723E}"
-	ProjectSection(ProjectDependencies) = postProject
-		{530D41F8-1E89-4CED-A1E6-6C39D9653F31} = {530D41F8-1E89-4CED-A1E6-6C39D9653F31}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LuaServer", "LuaServer\LuaServer.vcxproj", "{530D41F8-1E89-4CED-A1E6-6C39D9653F31}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lua", "Lua", "{A22DFB13-63B8-42E6-A526-195EB9644613}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,20 +21,9 @@ Global
 		{7BA3BA5A-4A82-4C6B-A939-57485473723E}.Release|x64.Build.0 = Release|x64
 		{7BA3BA5A-4A82-4C6B-A939-57485473723E}.Release|x86.ActiveCfg = Release|Win32
 		{7BA3BA5A-4A82-4C6B-A939-57485473723E}.Release|x86.Build.0 = Release|Win32
-		{530D41F8-1E89-4CED-A1E6-6C39D9653F31}.Debug|x64.ActiveCfg = Debug|x64
-		{530D41F8-1E89-4CED-A1E6-6C39D9653F31}.Debug|x64.Build.0 = Debug|x64
-		{530D41F8-1E89-4CED-A1E6-6C39D9653F31}.Debug|x86.ActiveCfg = Debug|Win32
-		{530D41F8-1E89-4CED-A1E6-6C39D9653F31}.Debug|x86.Build.0 = Debug|Win32
-		{530D41F8-1E89-4CED-A1E6-6C39D9653F31}.Release|x64.ActiveCfg = Release|x64
-		{530D41F8-1E89-4CED-A1E6-6C39D9653F31}.Release|x64.Build.0 = Release|x64
-		{530D41F8-1E89-4CED-A1E6-6C39D9653F31}.Release|x86.ActiveCfg = Release|Win32
-		{530D41F8-1E89-4CED-A1E6-6C39D9653F31}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{530D41F8-1E89-4CED-A1E6-6C39D9653F31} = {A22DFB13-63B8-42E6-A526-195EB9644613}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5CFE0240-FD0D-4B9B-AEDC-D94C126DE2CB}

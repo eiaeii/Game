@@ -7,6 +7,9 @@
     <Filter Include="Kernel">
       <UniqueIdentifier>{0f3f3ff2-3025-44f3-a39f-d0f0090c7aec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LuaAPI">
+      <UniqueIdentifier>{997cb51e-58e7-4360-b222-f38de64c23ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -15,10 +18,19 @@
     <ClCompile Include="WebServer.cpp">
       <Filter>Kernel</Filter>
     </ClCompile>
+    <ClCompile Include="API.cpp">
+      <Filter>LuaAPI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WebServer.h">
       <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="API.h">
+      <Filter>LuaAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ExportDefine\ExportStruct.h">
+      <Filter>LuaAPI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

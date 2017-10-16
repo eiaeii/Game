@@ -25,7 +25,6 @@
     <ClCompile Include="Src\LuaEngine\LuaEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\Common\CommonDefine.h" />
     <ClInclude Include="Include\Common\IThread.h" />
     <ClInclude Include="Include\Common\Lock.hpp" />
     <ClInclude Include="Include\Common\Log.h" />
