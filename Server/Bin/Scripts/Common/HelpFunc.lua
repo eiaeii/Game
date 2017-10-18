@@ -1,3 +1,5 @@
+local ffi = require "ffi"
+
 function SplitString(szFullString, szSeparator)
 	local nFindStartIndex = 1  
 	local nSplitIndex = 1  
@@ -13,4 +15,14 @@ function SplitString(szFullString, szSeparator)
 		nSplitIndex = nSplitIndex + 1  
 	end  
 	return nSplitArray  
+end
+
+function SaveDebugLog(strLog)
+	local msg = debug.traceback()
+	ffi.C.SaveDebugLog_Lua(strLog .. "\n" .. msg)
+end
+
+function SaveAssertLog(strLog)
+	local msg = debug.traceback()
+	ffi.C.SaveAssertLog_Lua(strLog .. "\n" .. msg)
 end

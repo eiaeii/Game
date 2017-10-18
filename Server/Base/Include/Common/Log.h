@@ -34,12 +34,14 @@ public:
 
 	bool Init();
 
-	void SaveLogEx(unsigned char btLogType, const char * pszFunction, unsigned long unLine, std::thread::id threadID, const char * pszLog, ...);
-	
-	void FlushAllLogToFile();
+	void SaveLog(unsigned char btLogType, const char *pszMsg);
+
+	void SaveLogEx(unsigned char btLogType, const char * pszFile, const char * pszFunction, unsigned long unLine, std::thread::id threadID, const char * pszLog, ...);
 	
 private:
-	void SaveLogToCache(unsigned char btLogType, char* pszBuffer, size_t nLength);
+	void FlushAllLogToFile();
+
+	void SaveLogToCache(unsigned char btLogType, const char *pszBuffer, size_t nLength);
 	
 	void FlushLogToFile(unsigned char btLogType);
 	
@@ -62,8 +64,8 @@ private:
 };
 
 //传入的msgLog必须是字符串
-#define SaveDebugLog(msgLog, ...)	(CLog::Instance()->SaveLogEx(CLog::Log_Debug, __FUNCTION__, __LINE__, std::this_thread::get_id(), msgLog, ##__VA_ARGS__))
-#define SaveAssertLog(msgLog, ...)	(CLog::Instance()->SaveLogEx(CLog::Log_Assert, __FUNCTION__, __LINE__, std::this_thread::get_id(), msgLog, ##__VA_ARGS__))
+#define SaveDebugLog(msgLog, ...)	(CLog::Instance()->SaveLogEx(CLog::Log_Debug, __FILE__, __FUNCTION__, __LINE__, std::this_thread::get_id(), msgLog, ##__VA_ARGS__))
+#define SaveAssertLog(msgLog, ...)	(CLog::Instance()->SaveLogEx(CLog::Log_Assert, __FILE__, __FUNCTION__, __LINE__, std::this_thread::get_id(), msgLog, ##__VA_ARGS__))
 
 #endif // _Log_HPP
 

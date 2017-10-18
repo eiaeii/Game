@@ -9,7 +9,7 @@ void StarServer(int argc, char *argv[])
 {
 	if (!CLog::Instance()->Init())
 	{
-		printf("[Error]日志服务初始化失败! Function:%s, Line:%d\n", __FUNCTION__, __LINE__);
+		printf("[Error]日志服务 初始化失败! Function:%s, Line:%d\n", __FUNCTION__, __LINE__);
 		return;
 	}
 

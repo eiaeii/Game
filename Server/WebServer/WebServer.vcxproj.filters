@@ -18,7 +18,10 @@
     <ClCompile Include="WebServer.cpp">
       <Filter>Kernel</Filter>
     </ClCompile>
-    <ClCompile Include="API.cpp">
+    <ClCompile Include="..\Common\CommonAPI.cpp">
+      <Filter>LuaAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="WebServerAPI.cpp">
       <Filter>LuaAPI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -26,10 +29,13 @@
     <ClInclude Include="WebServer.h">
       <Filter>Kernel</Filter>
     </ClInclude>
-    <ClInclude Include="API.h">
+    <ClInclude Include="..\ExportDefine\ExportStruct.h">
       <Filter>LuaAPI</Filter>
     </ClInclude>
-    <ClInclude Include="..\ExportDefine\ExportStruct.h">
+    <ClInclude Include="..\Common\CommonAPI.h">
+      <Filter>LuaAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="WebServerAPI.h">
       <Filter>LuaAPI</Filter>
     </ClInclude>
   </ItemGroup>

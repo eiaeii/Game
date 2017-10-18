@@ -168,12 +168,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Common\CommonAPI.h" />
     <ClInclude Include="..\ExportDefine\ExportStruct.h" />
-    <ClInclude Include="API.h" />
+    <ClInclude Include="WebServerAPI.h" />
     <ClInclude Include="WebServer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="API.cpp" />
+    <ClCompile Include="..\Common\CommonAPI.cpp" />
+    <ClCompile Include="WebServerAPI.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="WebServer.cpp" />
   </ItemGroup>

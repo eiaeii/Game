@@ -3,6 +3,8 @@
 
 CLog::~CLog()
 {
+	FlushAllLogToFile();
+
 	for (short i = 0; i < Log_Num; ++i)
 	{
 		delete[] m_LogCache[i];
@@ -42,11 +44,42 @@ bool CLog::Init()
 	m_LogPrintFlag[Log_Debug] = 0;
 #endif // !_DEBUG
 
-
 	return true;
 }
 
-void CLog::SaveLogEx(unsigned char btLogType, const char * pszFunction, unsigned long unLine, std::thread::id threadID, const char * pszLog, ...)
+void CLog::SaveLog(unsigned char btLogType, const char *pszMsg)
+{
+	if (0 == m_LogSaveFlag[btLogType] && 0 == m_LogPrintFlag[btLogType])
+		return;
+
+	std::stringstream ss;
+
+	ss << "【Lua】" << pszMsg << "\n\n";
+
+	auto strLog = ss.str();
+	
+	auto colorFunc = [&](unsigned char btType)
+	{
+		if (m_LogPrintFlag[btType])
+		{
+#ifdef _LINUX_
+#else
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), m_windowColor[btType]);
+#endif // !_LINUX
+			printf_s(strLog.c_str());
+
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_GREEN);
+		}
+
+	};
+
+	colorFunc(btLogType);
+
+	if (1 == m_LogSaveFlag[btLogType])
+		SaveLogToCache(btLogType, strLog.c_str(), strLog.length());
+}
+
+void CLog::SaveLogEx(unsigned char btLogType, const char * pszFile, const char * pszFunction, unsigned long unLine, std::thread::id threadID, const char * pszLog, ...)
 {
 	if (0 == m_LogSaveFlag[btLogType] && 0 == m_LogPrintFlag[btLogType])
 		return;
@@ -59,25 +92,12 @@ void CLog::SaveLogEx(unsigned char btLogType, const char * pszFunction, unsigned
 
 	std::stringstream ss;
 
-	ss << " 【Thread [ ";
-	ss << threadID;
-	ss << " ]";
-
-	ss << " Func [ ";
-	ss << pszFunction;
-	ss << " ]";
-
-	ss << " Line [ ";
-	ss << unLine;
-	ss << " ]";
-
-	ss << " Time [ ";
-	ss << CTimeManager::Instance()->GetYYYYMMDDHHMMSSString();
-	ss << " ]";
-
-	ss << "】\n\n";
-
-	strcat_s(szTemLogFormat, ss.str().c_str());
+	ss << szTemLogFormat << "\n";
+	ss << "日志信息：\n";
+	ss << "\t" << pszFile << ":" << unLine << ":" << "in function '" << pszFunction << "'\n";
+	ss << "\tThread:" << threadID << "  Time:" << CTimeManager::Instance()->GetYYYYMMDDHHMMSSString() << "\n\n";
+	
+	auto strLog = ss.str();
 
 	auto colorFunc = [&](unsigned char btType)
 	{
@@ -87,7 +107,7 @@ void CLog::SaveLogEx(unsigned char btLogType, const char * pszFunction, unsigned
 #else
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), m_windowColor[btType]);
 #endif // !_LINUX
-			printf_s(szTemLogFormat);
+			printf_s(strLog.c_str());
 
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_GREEN);
 		}
@@ -97,7 +117,7 @@ void CLog::SaveLogEx(unsigned char btLogType, const char * pszFunction, unsigned
 	colorFunc(btLogType);
 
 	if (1 == m_LogSaveFlag[btLogType])
-		SaveLogToCache(btLogType, szTemLogFormat, strlen(szTemLogFormat));
+		SaveLogToCache(btLogType, strLog.c_str(), strLog.length());
 }
 
 void CLog::FlushAllLogToFile()
@@ -106,7 +126,7 @@ void CLog::FlushAllLogToFile()
 		FlushLogToFile(i);
 }
 
-void CLog::SaveLogToCache(unsigned char btLogType, char* pszBuffer, size_t nLength)
+void CLog::SaveLogToCache(unsigned char btLogType, const char *pszBuffer, size_t nLength)
 {
 	if (nullptr == pszBuffer)
 	{
