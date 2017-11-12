@@ -24,6 +24,9 @@
     <ClCompile Include="Src\LuaEngine\LuaEngine.cpp">
       <Filter>LuaEngine</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Common\Lock.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Common\TimeManager.h">
@@ -41,7 +44,7 @@
     <ClInclude Include="Include\Common\Singleton.hpp">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Common\Lock.hpp">
+    <ClInclude Include="Include\Common\Lock.h">
       <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>

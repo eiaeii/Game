@@ -90,3 +90,8 @@ void CLuaEngine::SetLuaSearchPath()
 			AddSearchPath(p.path().string().c_str());
 	}
 }
+
+void CLuaEngine::DoString(const char* pszCode)
+{
+	luaL_dostring(m_pLuaState, pszCode);
+}

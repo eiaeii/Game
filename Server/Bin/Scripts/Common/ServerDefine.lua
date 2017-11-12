@@ -2,10 +2,10 @@ local ffi = require "ffi"
 
 ffi.cdef[[
 
-struct Msg_Goods_WEB2GB
+struct TestStruct
 {
-	long long nGoodsID;
-	int nNum;
+	int a;
+	int b;
 };
 
 ]]

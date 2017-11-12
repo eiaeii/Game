@@ -5,6 +5,7 @@
 
 // Export Begin
 
+SERVER_API TestStruct TestAPI(TestStruct stIn);
 
 // Export End
 

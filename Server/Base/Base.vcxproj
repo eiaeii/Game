@@ -20,13 +20,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Common\IThread.cpp" />
+    <ClCompile Include="Src\Common\Lock.cpp" />
     <ClCompile Include="Src\Common\Log.cpp" />
     <ClCompile Include="Src\Common\TimeManager.cpp" />
     <ClCompile Include="Src\LuaEngine\LuaEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Common\IThread.h" />
-    <ClInclude Include="Include\Common\Lock.hpp" />
+    <ClInclude Include="Include\Common\Lock.h" />
     <ClInclude Include="Include\Common\Log.h" />
     <ClInclude Include="Include\Common\Singleton.hpp" />
     <ClInclude Include="Include\Common\TimeManager.h" />

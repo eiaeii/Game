@@ -1,7 +1,7 @@
 #ifndef _WEBSERVER_H
 #define _WEBSERVER_H
 
-#include "Lock.hpp"
+#include "Lock.h"
 #include "Log.h"
 #include "Singleton.hpp"
 #include "IThread.h"

@@ -2,7 +2,6 @@
 
 void IThread::BeginRun()
 {
-	m_thID = std::this_thread::get_id();
 	srand((unsigned)time(NULL));
 }
 

@@ -18,11 +18,7 @@ class IThread
 	};
 
 public:
-	std::thread::id GetThreadID() const
-	{
-		return m_thID;
-	}
-
+	
 	ThreadStatus GetStatus()
 	{
 		return m_btStatus;
@@ -38,10 +34,10 @@ public:
 
 	bool Stop();
 	
+private:
 	virtual void ProcessLogic() = 0;
 	virtual bool BeginStop() = 0;
 
-private:
 	void Sleep()
 	{
 		std::this_thread::sleep_for(m_sleepTime);
@@ -55,7 +51,6 @@ private:
 	}
 
 private:
-	std::thread::id m_thID;
 	std::atomic<ThreadStatus> m_btStatus = ThreadStatus::THREAD_STATUS_READY;
 	std::chrono::milliseconds m_sleepTime = std::chrono::milliseconds(1);
 };

@@ -167,7 +167,7 @@ public:
 	bool LoadLuaFile(const char *szLuaFileName);
 
 	template<typename... T>
-	inline bool RunLuaFunction(const char *szFunctionName, const T&... args)
+	bool RunLuaFunction(const char *szFunctionName, const T&... args)
 	{
 		int nTop = lua_gettop(m_pLuaState);
 		std::string strError = "¡¾Lua¡¿";
@@ -217,7 +217,7 @@ public:
 	}
 
 	template<size_t N, typename... T>
-	inline bool RunLuaFunctionReturnArray(const char *szFunctionName, std::array<LuaParam, N> &arrResult, const T&... args)
+	bool RunLuaFunctionReturnArray(const char *szFunctionName, std::array<LuaParam, N> &arrResult, const T&... args)
 	{
 		int nTop = lua_gettop(m_pLuaState);
 		std::string strError = "¡¾Lua¡¿";
@@ -301,79 +301,81 @@ public:
 		return false;
 	}
 
+	void DoString(const char* pszCode);
+
 private:
 	
-	void inline PushValue(const bool &value)
+	void PushValue(const bool &value)
 	{
 		lua_pushboolean(m_pLuaState, value);
 	}
 
-	void inline PushValue(const char &value)
+	void PushValue(const char &value)
 	{
 		lua_pushinteger(m_pLuaState, value);
 	}
 
-	void inline PushValue(const unsigned char &value)
+	void PushValue(const unsigned char &value)
 	{
 		lua_pushinteger(m_pLuaState, value);
 	}
 
-	void inline PushValue(const short &value)
+	void PushValue(const short &value)
 	{
 		lua_pushinteger(m_pLuaState, value);
 	}
 
-	void inline PushValue(const unsigned short&value)
+	void PushValue(const unsigned short&value)
 	{
 		lua_pushinteger(m_pLuaState, value);
 	}
 
-	void inline PushValue(const int &value)
+	void PushValue(const int &value)
 	{
 		lua_pushinteger(m_pLuaState, value);
 	}
 
-	void inline PushValue(const unsigned int &value)
+	void PushValue(const unsigned int &value)
 	{
 		lua_pushinteger(m_pLuaState, value);
 	}
 
-	void inline PushValue(const long &value)
+	void PushValue(const long &value)
 	{
 		lua_pushinteger(m_pLuaState, value);
 	}
 
-	void inline PushValue(const unsigned long &value)
+	void PushValue(const unsigned long &value)
 	{
 		lua_pushinteger(m_pLuaState, value);
 	}
 
-	void inline PushValue(const long long &value)
+	void PushValue(const long long &value)
 	{
 		lua_pushinteger(m_pLuaState, value);
 	}
 
-	void inline PushValue(const unsigned long long &value)
+	void PushValue(const unsigned long long &value)
 	{
 		lua_pushinteger(m_pLuaState, value);
 	}
 
-	void inline PushValue(const float &value)
+	void PushValue(const float &value)
 	{
 		lua_pushnumber(m_pLuaState, value);
 	}
 
-	void inline PushValue(const double &value)
+	void PushValue(const double &value)
 	{
 		lua_pushnumber(m_pLuaState, value);
 	}
 
-	void inline PushValue(const char *szValue)
+	void PushValue(const char *szValue)
 	{
 		lua_pushstring(m_pLuaState, szValue);
 	}
 
-	void inline PushValue(const std::string &strValue)
+	void PushValue(const std::string &strValue)
 	{
 		lua_pushstring(m_pLuaState, strValue.c_str());
 	}

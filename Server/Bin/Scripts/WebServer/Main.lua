@@ -1,8 +1,6 @@
 function Main()
 	require "Common"
-	require "test"
+	require "Test"
 end
 
 Main()
-
-MyTest()
