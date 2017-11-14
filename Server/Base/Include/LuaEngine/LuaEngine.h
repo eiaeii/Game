@@ -192,7 +192,7 @@ public:
 				PushValue(value);
 			};
 
-			auto temp = { 0, (funcPushValue(args), 0)... , 0 };
+			auto temp = {(funcPushValue(args), 0)...};
 
 			int nErrorCode = lua_pcall(m_pLuaState, nInNum, 0, 0);
 			if (0 == nErrorCode)
@@ -242,7 +242,7 @@ public:
 				PushValue(value);
 			};
 
-			auto temp = { 0, (funcPushValue(args), 0)... , 0 };
+			auto temp = {(funcPushValue(args), 0)...};
 
 			int nErrorCode = lua_pcall(m_pLuaState, nInNum, N, 0);
 			if (0 == nErrorCode)
