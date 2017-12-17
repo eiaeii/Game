@@ -19,12 +19,12 @@ bool StarServer(int argc, char *argv[])
 		return false;
 	}
 
-	if (!CLuaEngine::Instance()->LoadLuaFile("Scripts/WebServer/Main.lua"))
+	if (!CLuaEngine::Instance()->LoadLuaFile("Data/Scripts/WebServer/Main.lua"))
 	{
 		SaveAssertLog("LuaÒýÇæ Æô¶¯Ê§°Ü£¡ Function:%s, Line:%d", __FUNCTION__, __LINE__);
 		return false;
 	}
-
+	
 	if (!CWebServer::Instance()->InitServer(argc, argv))
 	{
 		SaveAssertLog("WebServer ³õÊ¼»¯Ê§°Ü£¡ Function:%s, Line:%d", __FUNCTION__, __LINE__);
@@ -42,12 +42,16 @@ bool StarServer(int argc, char *argv[])
 	std::string strCMD;
 	while (true)
 	{
-		std::cin >> strCMD;
+		std::getline(std::cin, strCMD);
+		strCMD.erase(std::remove(strCMD.begin(), strCMD.end(), '\"'), strCMD.end());
+
 		if (strCMD == "exit")
 		{
 			CWebServer::Instance()->Stop();
 			break;
 		}
+		else if (strCMD.find(".lua") != std::string::npos)
+			CLuaEngine::Instance()->LoadLuaFile(strCMD.c_str());
 		else
 			CLuaEngine::Instance()->DoString(strCMD.c_str());
 	}

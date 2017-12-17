@@ -103,7 +103,7 @@
       <SubSystem>Console</SubSystem>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>../Lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Base.lib;lua51.lib;luajit.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Base_$(Configuration).lib;lua51.lib;luajit.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -121,7 +121,7 @@
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <ShowProgress>NotSet</ShowProgress>
       <AdditionalLibraryDirectories>../Lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Base.lib;lua51.lib;luajit.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Base_$(Configuration).lib;lua51.lib;luajit.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -142,7 +142,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>../Lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Base.lib;lua51.lib;luajit.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Base_$(Configuration).lib;lua51.lib;luajit.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -163,7 +163,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>../Lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Base.lib;lua51.lib;luajit.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Base_$(Configuration).lib;lua51.lib;luajit.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>

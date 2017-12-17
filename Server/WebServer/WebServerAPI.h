@@ -5,7 +5,8 @@
 
 // Export Begin
 
-SERVER_API TestStruct TestAPI(TestStruct stIn);
+SERVER_API TestStruct API_TestStruct(TestStruct stIn);
+SERVER_API TestStruct* API_TestArray(TestStruct *stIn, int n);
 
 // Export End
 
