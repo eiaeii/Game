@@ -51,7 +51,7 @@ private:
 	}
 
 private:
-	std::atomic<ThreadStatus> m_btStatus = ThreadStatus::THREAD_STATUS_READY;
+	std::atomic<ThreadStatus> m_btStatus = { ThreadStatus::THREAD_STATUS_READY };
 	std::chrono::milliseconds m_sleepTime = std::chrono::milliseconds(1);
 };
 

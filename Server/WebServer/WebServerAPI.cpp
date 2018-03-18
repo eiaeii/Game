@@ -5,23 +5,33 @@ extern "C"
 #include "WebServerAPI.h"
 }
 
-TestStruct API_TestStruct(TestStruct stIn)
+TestStruct API_TestStruct(TestStruct stIn, TestStruct stOut)
 {
 	TestStruct st;
 	st.a = stIn.a;
 	st.b = stIn.b;
+	stOut = st;
 	return st;
 }
 
-SERVER_API TestStruct* API_TestArray(TestStruct *stIn, int n)
+TestStruct API_TestArray(TestStruct *stIn, int nIn, TestStruct *stOut, int *nOut)
 {
-	if (!stIn)
-		return nullptr;
+	TestStruct st;
 
-	for (int i = 0; i < n; ++i)
+	for (int i = 0; i < nIn; ++i)
 	{
-
+		st.a += stIn[i].a;
+		st.b += stIn[i].b;
+		stOut[i].a = st.a;
+		stOut[i].b = st.a;
 	}
 
-	return nullptr;
+	*nOut = 3;
+
+	return st;
+}
+
+int API_TestPointer(TestStruct *stIn, int nIn)
+{
+	return stIn->a + stIn->b + nIn;
 }

@@ -1,5 +1,4 @@
 #include "Log.h"
-#include <filesystem>
 
 CLog::~CLog()
 {
@@ -62,13 +61,12 @@ void CLog::SaveLog(unsigned char btLogType, const char *pszMsg)
 	{
 		if (m_LogPrintFlag[btType])
 		{
-#ifdef _LINUX_
+#ifdef _WIN64
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_GREEN);
 #else
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), m_windowColor[btType]);
 #endif // !_LINUX
 			printf_s(strLog.c_str());
-
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_GREEN);
 		}
 
 	};
@@ -103,10 +101,9 @@ void CLog::SaveLogEx(unsigned char btLogType, const char * pszFile, const char *
 	{
 		if (m_LogPrintFlag[btType])
 		{
-#ifdef _LINUX_
-#else
+#ifdef _WIN64
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), m_windowColor[btType]);
-#endif // !_LINUX
+#endif // !_WIN64
 			printf_s(strLog.c_str());
 
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_GREEN);
