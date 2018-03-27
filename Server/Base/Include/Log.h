@@ -6,11 +6,11 @@
 #include <string.h>
 #include <thread>
 #include <sstream>
-#include <filesystem>
+#include <experimental/filesystem>
 
-#ifdef _WIN64
+#ifdef _WINDOWS
 	#include <Windows.h>
-#endif // !_WIN64
+#endif // !_WINDOWS
 
 
 #ifndef _Log_HPP
@@ -52,13 +52,13 @@ private:
 	std::atomic_char* m_LogCache[Log_Num] = { nullptr };
 	size_t m_LogPos[Log_Num] = { 0 };
 
-#ifdef _WIN64
+#ifdef _WINDOWS
 	unsigned short m_windowColor[Log_Num] =
 	{
 		FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_GREEN,
 		FOREGROUND_RED,
 	};
-#endif // !_WIN64
+#endif // !_WINDOWS
 };
 
 //传入的msgLog必须是字符串

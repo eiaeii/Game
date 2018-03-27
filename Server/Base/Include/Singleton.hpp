@@ -6,6 +6,7 @@
 
 #ifndef _Singleton_HPP
 #define _Singleton_HPP
+#include<stdlib.h>
 
 template <typename T, bool mustDelete = true>
 class CSingleton

@@ -1,4 +1,5 @@
 #include "Log.h"
+#include <stdarg.h>
 
 CLog::~CLog()
 {
@@ -61,12 +62,10 @@ void CLog::SaveLog(unsigned char btLogType, const char *pszMsg)
 	{
 		if (m_LogPrintFlag[btType])
 		{
-#ifdef _WIN64
+#ifdef _WINDOWS
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_GREEN);
-#else
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), m_windowColor[btType]);
-#endif // !_LINUX
-			printf_s(strLog.c_str());
+#endif // !_WINDOWS
+			printf(strLog.c_str());
 		}
 
 	};
@@ -85,7 +84,7 @@ void CLog::SaveLogEx(unsigned char btLogType, const char * pszFile, const char *
 	char szTemLogFormat[4096] = { 0 };
 	va_list argptr;
 	va_start(argptr, pszLog);
-	vsnprintf_s(szTemLogFormat, sizeof(szTemLogFormat), pszLog, argptr);
+	vsnprintf(szTemLogFormat, sizeof(szTemLogFormat), pszLog, argptr);
 	va_end(argptr);
 
 	std::stringstream ss;
@@ -101,12 +100,13 @@ void CLog::SaveLogEx(unsigned char btLogType, const char * pszFile, const char *
 	{
 		if (m_LogPrintFlag[btType])
 		{
-#ifdef _WIN64
+#ifdef _WINDOWS
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), m_windowColor[btType]);
-#endif // !_WIN64
-			printf_s(strLog.c_str());
-
+#endif // !_WINDOWS
+			printf(strLog.c_str());
+#ifdef _WINDOWS
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_GREEN);
+#endif // !_WINDOWS
 		}
 
 	};
@@ -127,7 +127,7 @@ void CLog::SaveLogToCache(unsigned char btLogType, const char *pszBuffer, size_t
 {
 	if (nullptr == pszBuffer)
 	{
-		printf_s("[Error] SaveLogToCache, pszBuffer is null, Function:%s, Line:%d\n", __FUNCTION__, __LINE__);
+		printf("[Error] SaveLogToCache, pszBuffer is null, Function:%s, Line:%d\n", __FUNCTION__, __LINE__);
 		return;
 	}
 
@@ -164,7 +164,11 @@ void CLog::FlushLogToFile(unsigned char btLogType)
 
 		strFile = m_vecLogFile[btLogType] + m_strProcessName + "_" + CTimeManager::Instance()->GetYYYYMMDDString() + ".log";
 		FILE *pFile = nullptr;
+#ifdef _WINDOWS
 		fopen_s(&pFile, strFile.c_str(), "a+");
+#else
+		pFile = fopen(strFile.c_str(), "a+");
+#endif // _WINDOWS
 		if (nullptr == pFile)
 		{
 			printf("[Error] Open LogFile Fail! FileName:%s, Function:%s, Line:%d\n", strFile.c_str(), __FUNCTION__, __LINE__);
@@ -189,7 +193,11 @@ void CLog::FlushLogToFile(unsigned char btLogType)
 
 			strFile = m_vecLogFile[i] + m_strProcessName + "_" + CTimeManager::Instance()->GetYYYYMMDDString() + ".log";
 			FILE *pFile = nullptr;
+#ifdef _WINDOWS
 			fopen_s(&pFile, strFile.c_str(), "a+");
+#else
+			pFile = fopen(strFile.c_str(), "a+");
+#endif // _WINDOWS
 			if (nullptr == pFile)
 			{
 				printf("[Error] Open LogFile Fail! FileName:%s, Function:%s, Line:%d\n", strFile.c_str(), __FUNCTION__, __LINE__);

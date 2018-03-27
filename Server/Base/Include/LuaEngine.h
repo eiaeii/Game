@@ -9,6 +9,7 @@
 #include <iostream>
 #include "Singleton.hpp"
 #include "Log.h"
+#include <float.h>
 #ifdef __cplusplus
 extern "C"
 {
@@ -135,7 +136,7 @@ private:
 
 	union Value
 	{
-		Value() :num(0.0f), str("")
+		Value()
 		{
 
 		}
@@ -274,7 +275,7 @@ public:
 						break;
 					default:
 						char szError[64] = { 0 };
-						sprintf_s(szError, sizeof(szError), "【Lua】未支持的返回值类型，类型ID：%d", nType);
+						sprintf(szError, "【Lua】未支持的返回值类型，类型ID：%d", nType);
 						SaveAssertLog(szError);
 						lua_touserdata(m_pLuaState, -nCount + i);
 						arrResult[i] = 0.0f;
