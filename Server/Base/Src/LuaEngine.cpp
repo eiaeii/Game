@@ -84,7 +84,7 @@ void CLuaEngine::SetLuaSearchPath()
 {
 	auto curPath = std::experimental::filesystem::current_path().string();
 	
-	for (auto p : std::experimental::filesystem::recursive_directory_iterator(curPath))
+	for (auto &p : std::experimental::filesystem::recursive_directory_iterator(curPath))
 	{
 		if (std::experimental::filesystem::is_directory(p))
 			AddSearchPath(p.path().string().c_str());

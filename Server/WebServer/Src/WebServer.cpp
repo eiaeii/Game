@@ -4,9 +4,8 @@ CWebServer::~CWebServer()
 {
 }
 
-bool CWebServer::InitServer(int argc, char * argv[])
+bool CWebServer::InitServer()
 {
-	argc; argv;
 	return true;
 }
 

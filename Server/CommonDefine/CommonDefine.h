@@ -9,11 +9,11 @@
 #define SAFE_DELETE_ARRAY(x) do { delete[] (x); (x) = nullptr; } while(false)
 #endif
 
-#ifdef _WIN32
+#ifdef _WINDOWS
 	#define SERVER_API __declspec(dllexport)
 #else
-	#define SERVER_API
-#endif _WIN32
+	#define SERVER_API __attribute__((visibility("default")))
+#endif // _WINDOWS
 
 #endif // _CommonDefine_H
 

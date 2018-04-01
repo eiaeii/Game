@@ -10,7 +10,7 @@ class CWebServer : public IThread, public CSingleton<CWebServer>
 {
 public:
 	~CWebServer();
-	bool InitServer(int argc, char *argv[]);
+	bool InitServer();
 	bool Start();
 
 private:
