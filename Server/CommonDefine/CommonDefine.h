@@ -10,9 +10,9 @@
 #endif
 
 #ifdef _WINDOWS
-	#define SERVER_API __declspec(dllexport)
+	#define SERVER_API extern "C" __declspec(dllexport)
 #else
-	#define SERVER_API __attribute__((visibility("default")))
+	#define SERVER_API extern "C" /*__attribute__((visibility("default")))*/
 #endif // _WINDOWS
 
 #endif // _CommonDefine_H

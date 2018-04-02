@@ -19,13 +19,14 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/../Lib)
 add_definitions(-DUNICODE -D_UNICODE)
 
 #包含路径
-include_directories(./Include ../Base/Include ../Common ../CommonDefine ../ExportDefine)
+include_directories(./Include ../Base/Include ../Common/Include ../CommonDefine ../ExportDefine)
 
 #设置库目录
 link_directories(../Lib)
 
 #源文件路径
 aux_source_directory(./Src DIR_SRCS)
+aux_source_directory(../Common/Src DIR_COMMON)
 
 if (MSVC)
 	add_compile_options ("/W4")
@@ -39,7 +40,7 @@ else ()
 	add_compile_options ("-Wall")
 	add_compile_options ("-std=c++17")
 	add_compile_options ("-o3")
-	add_compile_options ("-fvisibility=hidden")
+	#add_compile_options ("-fvisibility=hidden")
 	#附加库
 	link_libraries(Base stdc++ pthread stdc++fs)
 	#luajit支持
@@ -47,4 +48,4 @@ else ()
 endif ()
 
 #生成可执行程序
-add_executable(WebServer ${DIR_SRCS})
+add_executable(WebServer ${DIR_SRCS} ${DIR_COMMON})

@@ -1,7 +1,10 @@
 #ifndef _WEBSERVER_API_H
 #define _WEBSERVER_API_H
 #include "CommonDefine.h"
+extern "C"
+{
 #include "ExportStruct.h"
+}
 
 // Export Begin
 

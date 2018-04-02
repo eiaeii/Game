@@ -43,6 +43,10 @@ bool StarServer()
 	while (true)
 	{
 		std::getline(std::cin, strCMD);
+		if (strCMD.empty())
+		{
+			continue;
+		}
 		
 		if (strCMD == "exit")
 		{
@@ -50,7 +54,9 @@ bool StarServer()
 			break;
 		}
 		else
+		{
 			CLuaEngine::Instance()->DoString(strCMD.c_str());
+		}
 	}
 
 	return true;
