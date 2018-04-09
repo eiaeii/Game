@@ -15,17 +15,6 @@ bool CLuaEngine::Init()
 		return false;
 	}
 	
-	luaopen_base(m_pLuaState);
-	luaopen_math(m_pLuaState);
-	luaopen_string(m_pLuaState);
-	luaopen_table(m_pLuaState);
-	luaopen_io(m_pLuaState);
-	luaopen_os(m_pLuaState);
-	//luaopen_package(m_pLuaState);
-	//luaopen_debug(m_pLuaState);
-	//luaopen_bit(m_pLuaState);
-	luaopen_jit(m_pLuaState);
-	luaopen_ffi(m_pLuaState);
 	luaL_openlibs(m_pLuaState);
 
 	SetLuaSearchPath();
