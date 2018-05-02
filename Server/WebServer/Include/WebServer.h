@@ -1,12 +1,12 @@
 #ifndef _WEBSERVER_H
 #define _WEBSERVER_H
 
-#include "Lock.h"
-#include "Log.h"
 #include "Singleton.hpp"
 #include "IThread.h"
+#include "IEngineProvider.h"
 
-class CWebServer : public IThread, public CSingleton<CWebServer>
+class CWebServer : public IThread,
+	public CSingleton<CWebServer>
 {
 public:
 	~CWebServer();

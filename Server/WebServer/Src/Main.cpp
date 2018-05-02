@@ -1,30 +1,12 @@
 #include <cstdio>
-#include "WebServer.h"
 #include <iostream>
 #include <string>
-#include "Log.h"
+
 #include "LuaEngine.h"
+#include "WebServer.h"
 
 bool StarServer()
 {
-	if (!CLog::Instance()->Init())
-	{
-		printf("[Error]日志服务 初始化失败! Function:%s, Line:%d\n", __FUNCTION__, __LINE__);
-		return false;
-	}
-
-	if (!CLuaEngine::Instance()->Init())
-	{
-		SaveAssertLog("Lua引擎 初始化失败！ Function:%s, Line:%d", __FUNCTION__, __LINE__);
-		return false;
-	}
-
-	if (!CLuaEngine::Instance()->LoadLuaFile("./Data/Scripts/WebServer/Main.lua"))
-	{
-		SaveAssertLog("Lua引擎 启动失败！ Function:%s, Line:%d", __FUNCTION__, __LINE__);
-		return false;
-	}
-	
 	if (!CWebServer::Instance()->InitServer())
 	{
 		SaveAssertLog("WebServer 初始化失败！ Function:%s, Line:%d", __FUNCTION__, __LINE__);
@@ -38,11 +20,12 @@ bool StarServer()
 	}
 
 	printf("WebServer Start Succeed!\n");
-	
+
 	std::string strCMD;
 	while (true)
 	{
 		std::getline(std::cin, strCMD);
+
 		if (strCMD.empty())
 		{
 			continue;
@@ -53,9 +36,13 @@ bool StarServer()
 			CWebServer::Instance()->Stop();
 			break;
 		}
+		else if (strCMD.find(".lua") != std::string::npos)
+		{
+			GetLuaEngine()->LoadLuaFile(strCMD.c_str());
+		}
 		else
 		{
-			CLuaEngine::Instance()->DoString(strCMD.c_str());
+			GetLuaEngine()->DoString(strCMD.c_str());
 		}
 	}
 

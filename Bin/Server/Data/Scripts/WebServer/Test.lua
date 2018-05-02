@@ -1,4 +1,5 @@
 local ffi = require "ffi"
+local CommonAPI = ffi.load("CommonAPI")
 
 function TestLog()
 	SaveAssertLog("SaveAssertLog≤‚ ‘")
@@ -7,7 +8,7 @@ end
 function TestAPI()
 	local paramIn = ffi.new("struct TestStruct", {123, 456})
 	local paramOut = ffi.new("struct TestStruct", {111, 222})
-	local paramResult = ffi.C.API_TestStruct(paramIn, paramOut)
+	local paramResult = CommonAPI.API_TestStruct(paramIn, paramOut)
 		
 	print("=============paramOut=============")
 	print(paramOut.a)
@@ -24,7 +25,7 @@ function TestP()
 
 	local paramOut = ffi.new("struct TestStruct[3]")
 	local paramOutNum = ffi.new("int[1]")
-	local paramResult = ffi.C.API_TestArray(paramIn, 3, paramOut, paramOutNum)
+	local paramResult = CommonAPI.API_TestArray(paramIn, 3, paramOut, paramOutNum)
 	
 	print("=============paramOut=============")
 	for i = 1, paramOutNum[0] do
@@ -40,7 +41,7 @@ end
 function TestPointer()
 	local paramIn = ffi.new("struct TestStruct", {1,2})
 	
-	local paramResult = ffi.C.API_TestPointer(paramIn, 3)
+	local paramResult = CommonAPI.API_TestPointer(paramIn, 3)
 	
 	print(paramResult)
 end

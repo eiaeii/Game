@@ -1,6 +1,8 @@
 #include "Log.h"
 #include <stdarg.h>
 
+CLog *g_pLogSystem = nullptr;
+
 CLog::~CLog()
 {
 	FlushAllLogToFile();
@@ -209,4 +211,34 @@ void CLog::FlushLogToFile(unsigned char btLogType)
 			fclose(pFile);
 		}
 	}
+}
+
+CLog* CreateLogSystem()
+{
+	if (nullptr != g_pLogSystem)
+	{
+		return g_pLogSystem;
+	}
+
+	g_pLogSystem = new CLog();
+	if (nullptr == g_pLogSystem)
+	{
+
+		printf("日志系统创建失败！");
+		return nullptr;
+	}
+
+	g_pLogSystem->Init();
+
+	return g_pLogSystem;
+}
+
+CLog* GetLogSystem()
+{
+	if (nullptr == g_pLogSystem)
+	{
+		return CreateLogSystem();
+	}
+
+	return g_pLogSystem;
 }

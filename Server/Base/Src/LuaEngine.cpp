@@ -5,6 +5,7 @@
 ************************************************************************/
 
 #include "LuaEngine.h"
+extern CLuaEngine *g_pLuaEngine = nullptr;
 
 bool CLuaEngine::Init()
 {
@@ -83,4 +84,33 @@ void CLuaEngine::SetLuaSearchPath()
 void CLuaEngine::DoString(const char* pszCode)
 {
 	luaL_dostring(m_pLuaState, pszCode);
+}
+
+CLuaEngine* CreateLuaEngine()
+{
+	if (nullptr != g_pLuaEngine)
+	{
+		return g_pLuaEngine;
+	}
+
+	g_pLuaEngine = new CLuaEngine();
+	if (nullptr == g_pLuaEngine)
+	{
+		SaveAssertLog("Lua´´½¨Ê§°Ü£¡");
+		return nullptr;
+	}
+
+	g_pLuaEngine->Init();
+
+	return g_pLuaEngine;
+}
+
+CLuaEngine* GetLuaEngine()
+{
+	if (nullptr == g_pLuaEngine)
+	{
+		return CreateLuaEngine();
+	}
+
+	return g_pLuaEngine;
 }

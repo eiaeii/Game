@@ -5,11 +5,12 @@
 ************************************************************************/
 
 #ifndef _LUAENGINE_H
+
 #include <array>
 #include <iostream>
-#include "Singleton.hpp"
-#include "Log.h"
 #include <float.h>
+
+#include "Log.h"
 #ifdef __cplusplus
 extern "C"
 {
@@ -159,7 +160,7 @@ private:
 	}m_value;
 };
 
-class CLuaEngine : public CSingleton<CLuaEngine>
+class CLuaEngine
 {
 public:
 
@@ -388,6 +389,10 @@ private:
 private:
 	lua_State *m_pLuaState;
 };
+
+extern CLuaEngine *g_pLuaEngine;
+SERVER_API CLuaEngine* CreateLuaEngine();
+SERVER_API CLuaEngine* GetLuaEngine();
 
 #endif // _LUAENGINE_H
 

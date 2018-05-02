@@ -1,5 +1,5 @@
 ﻿#工程名字
-project(WebServer)
+project(CommonAPI)
 
 #cmake最低版本
 cmake_minimum_required(VERSION 3.9.2)
@@ -27,11 +27,6 @@ include_directories(./Include ../Base/Include ../CommonDefine ../ExportDefine)
 #设置库目录
 link_directories(../Lib)
 
-#源文件路径
-aux_source_directory(./Src DIR_SRCS)
-aux_source_directory(../Common/Src DIR_COMMON)
-aux_source_directory(./WebServer/Src DIR_WebServer)
-
 if (MSVC)
 	add_compile_options ("/W4")
 	add_compile_options ("/WX")
@@ -45,6 +40,7 @@ else ()
 	add_compile_options ("-Wall")
 	add_compile_options ("-std=c++17")
 	add_compile_options ("-o3")
+	add_compile_options ("-fPIC")
 	
 	#附加库
 	link_libraries(Base stdc++ pthread stdc++fs)
@@ -52,5 +48,8 @@ else ()
 	link_libraries(luajit m dl)
 endif ()
 
-#生成可执行程序
-add_executable(WebServer ${DIR_SRCS} ${DIR_COMMON} ${DIR_WebServer})
+#源文件路径
+aux_source_directory(./Src DIR_SRCS)
+
+#生成静态库
+add_library(CommonAPI SHARED ${DIR_SRCS})

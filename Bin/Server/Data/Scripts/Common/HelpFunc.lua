@@ -1,13 +1,14 @@
 local ffi = require "ffi"
+local CommonAPI = ffi.load("CommonAPI")
 
 function SaveDebugLog(strLog)
 	local msg = debug.traceback()
-	ffi.C.SaveDebugLog_Lua(strLog .. "\n" .. msg)
+	CommonAPI.SaveDebugLog_Lua(strLog .. "\n" .. msg)
 end
 
 function SaveAssertLog(strLog)
 	local msg = debug.traceback()
-	ffi.C.SaveAssertLog_Lua(strLog .. "\n" .. msg)
+	CommonAPI.SaveAssertLog_Lua(strLog .. "\n" .. msg)
 end
 
 -------------------------------------------------------------------
