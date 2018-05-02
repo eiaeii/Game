@@ -3,7 +3,6 @@
 
 #include "Singleton.hpp"
 #include "IThread.h"
-#include "IEngineProvider.h"
 
 class CWebServer : public IThread,
 	public CSingleton<CWebServer>
