@@ -5,7 +5,7 @@
 ************************************************************************/
 
 #include "LuaEngine.h"
-extern CLuaEngine *g_pLuaEngine = nullptr;
+CLuaEngine *g_pLuaEngine = nullptr;
 
 bool CLuaEngine::Init()
 {

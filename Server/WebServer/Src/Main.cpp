@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <iostream>
 #include <string>
+#include <locale.h>
 
 #include "LuaEngine.h"
 #include "WebServer.h"
@@ -19,6 +20,7 @@ bool StarServer()
 		return false;
 	}
 
+	printf("服务器启动成功！\n");
 	printf("WebServer Start Succeed!\n");
 
 	std::string strCMD;
@@ -51,6 +53,7 @@ bool StarServer()
 
 int main()
 {
+	setlocale(LC_ALL, "zh_CN.UTF-8");
 	if (!StarServer())
 	{
 		printf("WebServer Start Failed!\n");

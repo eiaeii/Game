@@ -1,13 +1,13 @@
 #include "Lock.h"
 
-void CLock::Lock()
+inline void CLock::Lock()
 {
-	while (m_flag.test_and_set());
+	m_mutex.lock();
 }
 
-void CLock::UnLock()
+inline void CLock::UnLock()
 {
-	m_flag.clear();
+	m_mutex.unlock();
 }
 
 
