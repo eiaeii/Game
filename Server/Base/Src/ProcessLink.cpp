@@ -16,7 +16,7 @@ inline CProcessLink* CProcessLink::GetNext()
 
 inline void CProcessLink::SetPrev(CProcessLink *pPrev)
 {
-	if (nullptr == pNext || pNext == this)
+	if (nullptr == pPrev || pPrev == this)
 		return;
 
 	this->m_pPrev = pPrev;
