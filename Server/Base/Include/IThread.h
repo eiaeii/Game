@@ -1,10 +1,9 @@
-#include <thread>
-#include <chrono>
-#include <atomic>
-
 #ifndef _Thread_HPP
 #define _Thread_HPP
 
+#include <thread>
+#include <chrono>
+#include <atomic>
 
 class IThread
 {

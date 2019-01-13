@@ -22,7 +22,13 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${PROJECT_SOURCE_DIR}/../../Bi
 add_definitions(-DUNICODE -D_UNICODE)
 
 #包含路径
-include_directories(./Include ../Base/Include ../CommonDefine ../ExportDefine)
+include_directories(
+./Include
+../Base/Include
+../Base/Include/Net
+../CommonDefine
+../ExportDefine
+)
 
 #设置库目录
 link_directories(../Lib)

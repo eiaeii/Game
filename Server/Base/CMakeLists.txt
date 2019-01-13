@@ -35,10 +35,11 @@ endif ()
 
 #包含路径
 include_directories(./Include)
-include_directories(../CommonDefine)
+include_directories(./Include/Net)
 
 #源文件路径
 aux_source_directory(./Src DIR_SRCS)
+aux_source_directory(./Src/Net DIR_SRCS)
 
 #生成静态库
 add_library(Base STATIC ${DIR_SRCS})
