@@ -7,10 +7,13 @@
 #ifndef _PROACTOR_H
 #define _PROACTOR_H
 
+#include "CommonDefine.h"
+#include "IProactor.h"
+
 struct AsynIoDevice;
 struct AsynIoResult;
 
-struct Proactor
+class Proactor : public IProactor
 {
 	/**
 	*作用			：创建完成端口
@@ -32,6 +35,16 @@ struct Proactor
 	void HandleEventsLoop() override;
 
 	bool PostCompletion(AsynIoResult *pResult) override;
+
+private:
+
+#ifdef _WINDOWS
+	HANDLE  m_hCompletePort = nullptr; // 完成端口句柄
+	unsigned long m_nConcurrentThreadsNum = 0; // 并发工作线程序数
+#else
+
+#endif // _WINDOWS
+
 };
 
 #endif // _PROACTOR_H

@@ -9,6 +9,7 @@
 
 bool Proactor::Create(unsigned long nThreadNum)
 {
+	nThreadNum;
 	return false;
 }
 
@@ -18,11 +19,13 @@ void Proactor::Close()
 
 bool Proactor::ResgisterDevice(AsynIoDevice * pDevice)
 {
+	pDevice;
 	return false;
 }
 
 bool Proactor::HandleEvents(unsigned long nTimeOut)
 {
+	nTimeOut;
 	return false;
 }
 
@@ -32,5 +35,6 @@ void Proactor::HandleEventsLoop()
 
 bool Proactor::PostCompletion(AsynIoResult * pResult)
 {
+	pResult;
 	return false;
 }

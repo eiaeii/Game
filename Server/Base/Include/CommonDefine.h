@@ -12,14 +12,12 @@ static_assert(sizeof(void*) == 8, "该架构只支持64位平台");
 #endif
 
 #ifdef _WINDOWS
-	#define SERVER_API extern "C" __declspec(dllexport)
+#define SERVER_API extern "C" __declspec(dllexport)
+#include <Windows.h>
+
 #else
-	#define SERVER_API extern "C" __attribute__((visibility("default")))
+#define SERVER_API extern "C" __attribute__((visibility("default")))
 #endif // _WINDOWS
-
-using HANDLE = void *;
-
-#define INFINITE 0xFFFFFFFF  // Infinite timeout
 
 #endif // _CommonDefine_H
 

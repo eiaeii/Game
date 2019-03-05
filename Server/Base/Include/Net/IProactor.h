@@ -7,6 +7,8 @@
 #ifndef _IPROACTOR_H
 #define _IPROACTOR_H
 
+#include "CommonDefine.h"
+
 struct AsynIoDevice;
 struct AsynIoResult;
 
