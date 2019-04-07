@@ -1,26 +1,48 @@
-/***********************************************************************
-** 文件名：Proactor.cpp
-** 作  者：何水大(765865368@qq.com)
-** 时  间：2018-12-15
-** 描  述：异步事件分解模型（前摄器）
-************************************************************************/
-
 #include "Proactor.h"
+#include "AsynIoDevice.h"
 
 bool Proactor::Create(unsigned long nThreadNum)
 {
-	nThreadNum;
-	return false;
+	bool bResult = false;
+	m_nConcurrentThreadsNum = nThreadNum;
+#ifdef _WINDOWS
+	m_hCompletePort = ::CreateIoCompletionPort(INVALID_HANDLE_VALUE, 0, 0, nThreadNum);
+	bResult = m_hCompletePort != nullptr;
+#else
+
+#endif
+
+	return bResult;
 }
 
 void Proactor::Close()
 {
+	if (nullptr != m_hCompletePort)
+	{
+#ifdef _WINDOWS
+		::CloseHandle(m_hCompletePort);
+#endif // _WINDOWS
+
+	}
+
+	m_hCompletePort = nullptr;
 }
 
-bool Proactor::ResgisterDevice(AsynIoDevice * pDevice)
+bool Proactor::ResgisterAsynIoDevice(IAsynIoDevice * pDevice)
 {
-	pDevice;
-	return false;
+	if (nullptr == pDevice)
+		return false;
+
+	bool bResult = false;
+
+#ifdef _WINDOWS
+	HANDLE completeHandle = ::CreateIoCompletionPort(pDevice->GetHandle(), m_hCompletePort, (ULONG_PTR)pDevice, m_nConcurrentThreadsNum);
+	bResult = completeHandle == m_hCompletePort;
+#else
+
+#endif // _WINDOWS
+
+	return bResult;
 }
 
 bool Proactor::HandleEvents(unsigned long nTimeOut)
@@ -33,7 +55,7 @@ void Proactor::HandleEventsLoop()
 {
 }
 
-bool Proactor::PostCompletion(AsynIoResult * pResult)
+bool Proactor::PostCompletion(IAsynIoResult * pResult)
 {
 	pResult;
 	return false;

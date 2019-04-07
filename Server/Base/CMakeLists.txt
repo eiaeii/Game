@@ -34,8 +34,12 @@ else ()
 endif ()
 
 #包含路径
-include_directories(./Include)
-include_directories(./Include/Net)
+include_directories(
+./Include
+../Base/Include
+../Base/Include/Net
+../CommonDefine
+)
 
 #源文件路径
 aux_source_directory(./Src DIR_SRCS)

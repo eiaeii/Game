@@ -14,9 +14,10 @@ static_assert(sizeof(void*) == 8, "该架构只支持64位平台");
 #ifdef _WINDOWS
 #define SERVER_API extern "C" __declspec(dllexport)
 #include <Windows.h>
-
 #else
 #define SERVER_API extern "C" __attribute__((visibility("default")))
+using HANDLE = void*;
+
 #endif // _WINDOWS
 
 #endif // _CommonDefine_H

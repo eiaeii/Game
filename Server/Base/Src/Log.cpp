@@ -136,13 +136,14 @@ void CLog::SaveLogToCache(unsigned char btLogType, const char *pszBuffer, size_t
 	if (btLogType > Log_Num)
 		return;
 
-	if (MAX_LOG_CACHE_SIZE - m_LogPos[btLogType] < nLength)
+	auto &nCurPos = m_LogPos[btLogType];
+	if (MAX_LOG_CACHE_SIZE - nCurPos < nLength)
 	{
 		this->FlushLogToFile(btLogType);
 	}
 
-	memcpy(&m_LogCache[btLogType][m_LogPos[btLogType]], pszBuffer, nLength);
-	m_LogPos[btLogType] += nLength;
+	memcpy(&m_LogCache[btLogType][nCurPos], pszBuffer, nLength);
+	nCurPos += nLength;
 
 	if (Log_Assert == btLogType
 		|| Log_Debug == btLogType
