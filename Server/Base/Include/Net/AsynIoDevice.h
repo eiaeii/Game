@@ -2,6 +2,7 @@
 #define ASYNIODEVICE_H
 
 #include "CommonDefine.h"
+#include "NetDefine.h"
 
 struct IAsynIoResult;
 struct IAsynIoHandler;
@@ -22,7 +23,7 @@ struct IAsynIoDevice
 
 	virtual IAsynIoOperation_Connector* GetConnector() const = 0;
 
-	virtual IAsynIoResult* GreateAsynIoResult(unsigned char nIoType = 0, IAsynIoHandler* pHandler = nullptr) = 0;
+	virtual IAsynIoResult* GreateAsynIoResult(AsynIoType nIoType = AsynIoType::AsynIoType_Unknow, IAsynIoHandler* pHandler = nullptr) = 0;
 
 	virtual void DeleteAsynIoResult(IAsynIoResult *pResult) = 0;
 

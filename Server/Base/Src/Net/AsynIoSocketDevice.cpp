@@ -35,7 +35,7 @@ IAsynIoOperation_Connector * AsynIoSccketDevice::GetConnector() const
 	return nullptr;
 }
 
-IAsynIoResult * AsynIoSccketDevice::GreateAsynIoResult(unsigned char nIoType, IAsynIoHandler * pHandler)
+IAsynIoResult * AsynIoSccketDevice::GreateAsynIoResult(AsynIoType nIoType, IAsynIoHandler * pHandler)
 {
 	nIoType;
 	pHandler;

@@ -1,29 +1,16 @@
 #ifndef ASYNIOFRAME_H
 #define ASYNIOFRAME_H
 
-// 最大Buff数目
-constexpr int MAX_ASYN_IO_BUFF_COUNT = 128;
+#include "NetDefine.h"
 
 struct IAsynIoHandler;
 struct IAsynIoBuffer;
 struct IAsynIoDevice;
-
-enum  class AsynIoType : unsigned char
-{
-	AsynIoType_Unknow = 0,
-	AsynIoType_Read,
-	AsynIoType_Write,
-	AsynIoType_Accept,
-	AsynIoType_Connect,
-	AsynIoType_ReadFrom,
-	AsynIoType_WriteTo,
-	AsynIoType_Close,
-	AsynIoType_DisConnect,
-};
+struct IAsynIoResult;
 
 struct IAsynIoHandler
 {
-	virtual void HandleIoComplete(AsynIoResult* pResult) = 0;
+	virtual void HandleIoComplete(IAsynIoResult* pResult) = 0;
 
 	virtual void ReleaseRef() = 0;
 
@@ -42,15 +29,15 @@ struct IAsynIoResult : public OVERLAPPED
 struct IAsynIoResult : public epoll_event
 #endif // _WINDOWS
 {
-	virtual void SetAsynIoHandler(AsynIoHandler* handler) = 0;
+	virtual void SetAsynIoHandler(IAsynIoHandler* handler) = 0;
 
 	virtual void Complete() = 0;
 
 	virtual void PrepareBuffer(unsigned long nLen) = 0;
 
-	virtual void SetAsynIoBuffer(AsynIoBuffer* pBufferList, unsigned long nBufferCount) = 0;
+	virtual void SetAsynIoBuffer(IAsynIoBuffer* pBufferList, unsigned long nBufferCount) = 0;
 
-	virtual AsynIoBuffer* GetAsynIoBufferList() = 0;
+	virtual IAsynIoBuffer* GetAsynIoBufferList() = 0;
 
 	virtual unsigned long GetAsynIoBufferCount() const = 0;
 
@@ -64,13 +51,17 @@ struct IAsynIoResult : public epoll_event
 
 	virtual void SetErrorCode(unsigned long nCode) = 0;
 
-	virtual AsynIoDevice* GetAsynIoDevice() const = 0;
+	virtual IAsynIoDevice* GetAsynIoDevice() const = 0;
 
-	virtual void SetAsynIoDevice(AsynIoDevice* pDevice) = 0;
+	virtual void SetAsynIoDevice(IAsynIoDevice* pDevice) = 0;
 
 	virtual AsynIoType GetAsynIoType() const = 0;
 
-	virtual SetAsynIoType(AsynIoType btType) = 0;
+	virtual void SetAsynIoType(AsynIoType btType) = 0;
+
+	virtual bool IsSimulation() = 0;
+
+	virtual void SetSimulation(bool is_simulation) = 0;
 
 	virtual void Release() = 0;
 };

@@ -23,7 +23,7 @@ public:
 
 	IAsynIoOperation_Connector* GetConnector() const override;
 
-	IAsynIoResult* GreateAsynIoResult(unsigned char nIoType = 0, IAsynIoHandler* pHandler = nullptr) override;
+	IAsynIoResult* GreateAsynIoResult(AsynIoType nIoType = AsynIoType::AsynIoType_Unknow, IAsynIoHandler* pHandler = nullptr) override;
 
 	void DeleteAsynIoResult(IAsynIoResult *pResult) override;
 
