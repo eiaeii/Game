@@ -20,7 +20,6 @@ bool StarServer()
 		return false;
 	}
 
-	printf("服务器启动成功！\n");
 	printf("WebServer Start Succeed!\n");
 
 	std::string strCMD;

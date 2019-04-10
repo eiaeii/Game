@@ -104,10 +104,11 @@ bool Proactor::HandleEvents(unsigned long nTimeOut)
 
 void Proactor::HandleEventsLoop()
 {
+
 }
 
 bool Proactor::PostCompletion(IAsynIoResult * pResult)
 {
-	pResult;
-	return false;
+	pResult->SetSimulation(true);
+	return ::PostQueuedCompletionStatus(m_hCompletePort, 0, 0, pResult) == TRUE;
 }

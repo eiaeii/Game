@@ -11,7 +11,11 @@ class AsynIoResult : public IAsynIoResult
 {
 public:
 
-	void SetAsynIoHandler(IAsynIoHandler* handler) override;
+	AsynIoResult();
+
+	AsynIoResult(AsynIoType nType, IAsynIoHandler * pHandler);
+
+	void SetAsynIoHandler(IAsynIoHandler* pHandler) override;
 
 	void Complete() override;
 
@@ -43,20 +47,20 @@ public:
 
 	bool IsSimulation() override;
 
-	void SetSimulation(bool is_simulation) override;
+	void SetSimulation(bool bSimulation) override;
 
 	void Release() override;
 
 protected:
 	//////////////////////////////////////////////////////////////////////////
-	IAsynIoHandler *   m_pHandler;
-	IAsynIoDevice  *   m_pDevice;
-	AsynIoBuffer      m_BuffList[MAX_ASYN_IO_BUFF_COUNT];
-	DWORD             m_dwBuffCount;
-	DWORD             m_dwTransferredBytes;
-	DWORD             m_dwErrorCode;
-	AsynIoType        m_Type;
-	bool              m_bSimulation;
+	IAsynIoHandler *m_pHandler = nullptr;
+	IAsynIoDevice *m_pDevice = nullptr;
+	AsynIoBuffer m_BuffList[MAX_ASYN_IO_BUFF_COUNT];
+	unsigned long m_dwBuffCount = 0;
+	unsigned long m_dwTransferredBytes = 0;
+	unsigned long m_dwErrorCode = 0;
+	AsynIoType m_Type = AsynIoType::AsynIoType_Unknow;
+	bool m_bSimulation = false;
 };
 
 #endif //ASYNIORESULT_H

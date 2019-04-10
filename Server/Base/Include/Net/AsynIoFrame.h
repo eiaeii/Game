@@ -29,7 +29,7 @@ struct IAsynIoResult : public OVERLAPPED
 struct IAsynIoResult : public epoll_event
 #endif // _WINDOWS
 {
-	virtual void SetAsynIoHandler(IAsynIoHandler* handler) = 0;
+	virtual void SetAsynIoHandler(IAsynIoHandler* pHandler) = 0;
 
 	virtual void Complete() = 0;
 
@@ -61,15 +61,15 @@ struct IAsynIoResult : public epoll_event
 
 	virtual bool IsSimulation() = 0;
 
-	virtual void SetSimulation(bool is_simulation) = 0;
+	virtual void SetSimulation(bool bSimulation) = 0;
 
 	virtual void Release() = 0;
 };
 
 struct AsynIoBuffer
 {
-	unsigned long len;
-	unsigned char *buf;
+	unsigned long len = 0;
+	unsigned char *buf = nullptr;
 };
 
 #endif // ASYNIOFRAME_H
