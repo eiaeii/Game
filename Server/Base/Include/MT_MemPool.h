@@ -8,16 +8,20 @@
 
 enum
 {
-	MTMP_SHIFT = 4,								/// 对齐时的右移位数（决定了尺寸对齐的大小）， 可调
-	MTMP_MAX_SIZE =	8192,					    /// 内存池支持的最大分配单元,可调,最大8191*MTMP_ALIGN
-	MTMP_SMALL_SIZE =	0,						/// 小内存大小限制,可调,最大256*MTMP_ALIGN
-	MTMP_ALIGN = (1<<MTMP_SHIFT),				/// 内存对齐大小
-	MTMP_POOL_SIZE =(MTMP_MAX_SIZE>>MTMP_SHIFT),/// 内存池的桶数
-	MTMP_GROW = 16,						        /// 小内存在没有空闲节点时一次性分配的节点数,可调,<=64
-	MTMP_STATISTIC_INTERVAL = 2048,             /// 库存统计频率(2秒)
-	MTMP_SMALL_STORAGE = 4,                     /// 小内存库存 = 平均需求量的4倍
-	MTMP_LARGE_STORAGE = 1,                     /// 大内存库存 = 平均需求量
+	MTMP_SHIFT = 4,								// 对齐时的右移位数（决定了尺寸对齐的大小）， 可调
+	MTMP_MAX_SIZE = 8192,					    // 内存池支持的最大分配单元,可调,最大8191*MTMP_ALIGN
+	MTMP_SMALL_SIZE = 0,						// 小内存大小限制,可调,最大256*MTMP_ALIGN
+	MTMP_ALIGN = (1 << MTMP_SHIFT),				// 内存对齐大小
+	MTMP_POOL_SIZE = (MTMP_MAX_SIZE >> MTMP_SHIFT),// 内存池的桶数
+	MTMP_GROW = 16,						        // 小内存在没有空闲节点时一次性分配的节点数,可调,<=64
+	MTMP_STATISTIC_INTERVAL = 2048,             // 库存统计频率(2秒)
+	MTMP_SMALL_STORAGE = 4,                     // 小内存库存 = 平均需求量的4倍
+	MTMP_LARGE_STORAGE = 1,                     // 大内存库存 = 平均需求量
 };
+
+static_assert(MTMP_GROW <= 64, "MTMP_GROW <= 64");
+static_assert(MTMP_SMALL_SIZE < 256 * MTMP_ALIGN, "MTMP_SMALL_SIZE < 256 * MTMP_ALIGN");
+static_assert(MTMP_MAX_SIZE < 8191 * MTMP_ALIGN, "MTMP_MAX_SIZE < 8191 * MTMP_ALIGN");
 
 /**
 @ name   : 多线程安全内存池(第2版)
@@ -47,35 +51,35 @@ public:
 	struct  SMALL_MEM_NODE
 	{
 		unsigned short     bAllotted : 1;        // 该内存块是否已分配
-		unsigned short     bIsLarge  : 1;        // 该内存块是否是大内存
-		unsigned short     nIndex    : 6;        // 该内存块是批量分配的小内存块中的第几块
-		unsigned short     nPoolID   : 8;        // 该内存块所在内存池ID,即内存大小/MTMP_ALIGN
-		unsigned short     nPadding  :16;
+		unsigned short     bIsLarge : 1;        // 该内存块是否是大内存
+		unsigned short     nIndex : 6;        // 该内存块是批量分配的小内存块中的第几块
+		unsigned short     nPoolID : 8;        // 该内存块所在内存池ID,即内存大小/MTMP_ALIGN
+		unsigned short     nPadding : 16;
 	};
 
 	struct LARGE_MEM_NODE
 	{
 		unsigned short     bAllotted : 1;        // 该内存块是否已分配
-		unsigned short     bIsLarge  : 1;        // 该内存块是否是大内存
-		unsigned short     bSysMalloc: 1;        // 是否是系统分配的超大内存
-		unsigned short     nPoolID   :13;        // 该内存块所在内存池ID,即内存大小/MTMP_ALIGN
-		unsigned short     nPadding  :16;
+		unsigned short     bIsLarge : 1;        // 该内存块是否是大内存
+		unsigned short     bSysMalloc : 1;        // 是否是系统分配的超大内存
+		unsigned short     nPoolID : 13;        // 该内存块所在内存池ID,即内存大小/MTMP_ALIGN
+		unsigned short     nPadding : 16;
 
-		inline void operator = (WORD node) 
-		{ 
-			*(WORD*)this = node; 
+		inline void operator = (WORD node)
+		{
+			*(WORD*)this = node;
 		}
 
-		inline bool operator == (WORD node) 
-		{ 
-			return *(WORD*)this==node; 
+		inline bool operator == (WORD node)
+		{
+			return *(WORD*)this == node;
 		}
 	};
 
 	struct SYSTEM_MEM_BLOCK
 	{
 		unsigned long      bPoolNode : 1;        // 是否是内存池分配的内存
-		unsigned long      block_len :31;        // 内存块长度
+		unsigned long      block_len : 31;        // 内存块长度
 	};
 
 	struct MEM_NODE                              // 内存块结构
@@ -84,80 +88,68 @@ public:
 		{
 			SMALL_MEM_NODE   _node_s;
 			LARGE_MEM_NODE   _node_l;
-			SYSTEM_MEM_BLOCK _system_block;      // 大于MTMP_MAX_SIZE时使用系统分配内存机制
+			SYSTEM_MEM_BLOCK _system_block; // 大于MTMP_MAX_SIZE时使用系统分配内存机制
 		};
 
-		MEM_NODE *       pNext;                // 指向下一个节点
+		MEM_NODE * pNext = nullptr; // 指向下一个节点
 	};
 
 public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 分配内存
-	void * allocate(size_t size);
+	void* Allocate(size_t size);
 
 	// 重新分配内存
-	void * reallocate(void * p,size_t size);
+	void* Reallocate(void * p, size_t size);
 
 	// 释放内存
-	void deallocate(void * p);
+	void Deallocate(void * p);
 
 	// 默认记的是线程ID
-	inline unsigned long getID() { return m_id; }
+	inline unsigned long GetID() { return m_id; }
 
 	// 设置ID
-	inline void setID( unsigned long id ) { m_id = id; }
+	inline void SetID(unsigned long id) { m_id = id; }
 
-	// 构造函数
-	MT_MemPool() : m_id(0) 
-	{
-		assert( MTMP_GROW <=64 );
-		assert( MTMP_SMALL_SIZE < 256*MTMP_ALIGN );
-		assert( MTMP_MAX_SIZE < 8191*MTMP_ALIGN );
-		memset(m_memPool,0,sizeof(m_memPool));
-	}
-
-	void MT_MemPool_() 
+	void Restore()
 	{
 		m_id = 0;
-		assert( MTMP_GROW <=64 );
-		assert( MTMP_SMALL_SIZE < 256*MTMP_ALIGN );
-		assert( MTMP_MAX_SIZE < 8191*MTMP_ALIGN );
-		memset(m_memPool,0,sizeof(m_memPool));
+		memset(m_memPool, 0, sizeof(m_memPool));
 	}
 
 protected:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// 从内存池中取出空闲节点
-	inline MEM_NODE * pop( int pool );
+	inline MEM_NODE * Pop(int pool);
 
 	// 把一个新节点放进内存池
-	inline void push( int pool,MEM_NODE * node );
+	inline void Push(int pool, MEM_NODE * node);
 
 	// 创建新的节点
-	inline void buy_node( int pool );
+	inline void AddNode(int pool);
 
 	// 检查内存池存量,如果存量远大于需求则尝试释放
-	inline void check_mempool_store( int pool );
+	inline void CheckMempoolStore(int pool);
 
 	// 释放大内存池
-	inline void free_large_mempool( int pool );
+	inline void FreeLargeMempool(int pool);
 
 	// 释放小内存池
-	inline void free_small_mempool( int pool );
+	inline void FreeSmallMempool(int pool);
 
 protected:
 	struct MEM_POOL
 	{
-		MEM_NODE         *    pFreeHead;     // 内存池空闲头节点
-		unsigned long         nAlloted;      // 单位时间内已分配内存次数
-		unsigned long         nFreeNum;		 // 剩余内存块数
-		unsigned long         nAverNeed;	 // 单位时间内的平均需求量(MTMP_STATISTIC_INTERVAL指定)
-		unsigned long         nLastStatistic;// 最后统计时间
+		MEM_NODE		*pFreeHead = nullptr;			// 内存池空闲头节点
+		unsigned long	nAlloted = 0;			// 单位时间内已分配内存次数
+		unsigned long	nFreeNum = 0;			// 剩余内存块数
+		unsigned long	nAverNeed = 0;			// 单位时间内的平均需求量(MTMP_STATISTIC_INTERVAL指定)
+		unsigned long	nLastStatistic = 0;		// 最后统计时间
 	};
 
-	unsigned long          m_id;						 // 默认记得是线程ID
-	MEM_POOL               m_memPool[MTMP_POOL_SIZE];    // 内存池数组
+	unsigned long m_id = 0; // 默认记得是线程ID
+	MEM_POOL m_memPool[MTMP_POOL_SIZE] = { 0 }; // 内存池数组
 };
 
 /**
@@ -167,30 +159,28 @@ protected:
 class MT_Allocator/* : public rkt::Singleton<MT_Allocator>*/
 {
 public:
-#	define    MY_TSL_INDEX		19810225
-
-	static MT_Allocator& getInstance()
+	static MT_Allocator& GetInstance()
 	{
 		static MT_Allocator s_instance;
 		return s_instance;
 	}
 
 	// 分配内存
-	void * allocate(size_t size)
+	void * Allocate(size_t size)
 	{
-		return TLS_MemPool()->allocate(size);
+		return TLS_MemPool()->Allocate(size);
 	}
 
 	// 重新分配内存
-	void * reallocate(void * p,size_t size)
+	void * Reallocate(void * p, size_t size)
 	{
-		return TLS_MemPool()->reallocate(p,size);
+		return TLS_MemPool()->Reallocate(p, size);
 	}
 
 	// 释放内存
-	void deallocate(void * p)
+	void Deallocate(void * p)
 	{
-		TLS_MemPool()->deallocate(p);
+		TLS_MemPool()->Deallocate(p);
 	}
 
 	// 通过Thread Local Storage取得当前线程对应的内存池
@@ -203,7 +193,7 @@ public:
 	}
 
 protected:
-	DWORD                m_dwTLSIndex;
+	DWORD m_dwTLSIndex = 0;
 };
 
 #pragma pack()
