@@ -1,22 +1,29 @@
 ﻿#ifndef __MULTI_THREAD_MEMORY_POOL_EDITION_2_H__
 #define __MULTI_THREAD_MEMORY_POOL_EDITION_2_H__
 
-#include <Windows.h>
+extern void* MT_Alloc(size_t nSize);
+extern void* MT_ReAlloc(void *p, size_t nSize);
+extern void  MT_Free(void *p);
+
 #include <assert.h>
+#include <thread>
 
 #pragma pack(1)
 
+class MT_MemPool;
+extern thread_local MT_MemPool *g_pMemPool;
+
 enum
 {
-	MTMP_SHIFT = 4,								// 对齐时的右移位数（决定了尺寸对齐的大小）， 可调
-	MTMP_MAX_SIZE = 8192,					    // 内存池支持的最大分配单元,可调,最大8191*MTMP_ALIGN
-	MTMP_SMALL_SIZE = 0,						// 小内存大小限制,可调,最大256*MTMP_ALIGN
-	MTMP_ALIGN = (1 << MTMP_SHIFT),				// 内存对齐大小
-	MTMP_POOL_SIZE = (MTMP_MAX_SIZE >> MTMP_SHIFT),// 内存池的桶数
-	MTMP_GROW = 16,						        // 小内存在没有空闲节点时一次性分配的节点数,可调,<=64
-	MTMP_STATISTIC_INTERVAL = 2048,             // 库存统计频率(2秒)
-	MTMP_SMALL_STORAGE = 4,                     // 小内存库存 = 平均需求量的4倍
-	MTMP_LARGE_STORAGE = 1,                     // 大内存库存 = 平均需求量
+	MTMP_SHIFT = 4,										// 对齐时的右移位数（决定了尺寸对齐的大小）， 可调
+	MTMP_MAX_SIZE = 8192,								// 内存池支持的最大分配单元,可调,最大8191*MTMP_ALIGN
+	MTMP_SMALL_SIZE = 0,								// 小内存大小限制,可调,最大256*MTMP_ALIGN
+	MTMP_ALIGN = (1 << MTMP_SHIFT),						// 内存对齐大小
+	MTMP_POOL_SIZE = (MTMP_MAX_SIZE >> MTMP_SHIFT),		// 内存池的桶数
+	MTMP_GROW = 16,										// 小内存在没有空闲节点时一次性分配的节点数,可调,<=64
+	MTMP_STATISTIC_INTERVAL = 2048,						// 库存统计频率(2秒)
+	MTMP_SMALL_STORAGE = 4,								// 小内存库存 = 平均需求量的4倍
+	MTMP_LARGE_STORAGE = 1,								// 大内存库存 = 平均需求量
 };
 
 static_assert(MTMP_GROW <= 64, "MTMP_GROW <= 64");
@@ -65,14 +72,14 @@ public:
 		unsigned short     nPoolID : 13;        // 该内存块所在内存池ID,即内存大小/MTMP_ALIGN
 		unsigned short     nPadding : 16;
 
-		inline void operator = (WORD node)
+		inline void operator = (unsigned short tagNode)
 		{
-			*(WORD*)this = node;
+			*(unsigned short*)this = tagNode;
 		}
 
-		inline bool operator == (WORD node)
+		inline bool operator == (unsigned short tagNode)
 		{
-			return *(WORD*)this == node;
+			return *(unsigned short*)this == tagNode;
 		}
 	};
 
@@ -97,23 +104,20 @@ public:
 public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 分配内存
-	void* Allocate(size_t size);
+	void* Allocate(size_t nSize);
 
 	// 重新分配内存
-	void* Reallocate(void * p, size_t size);
+	void* Reallocate(void * p, size_t nSize);
 
 	// 释放内存
 	void Deallocate(void * p);
 
 	// 默认记的是线程ID
-	inline unsigned long GetID() { return m_id; }
+	auto GetID() { return m_thID; }
 
-	// 设置ID
-	inline void SetID(unsigned long id) { m_id = id; }
-
-	void Restore()
+	void ReSet()
 	{
-		m_id = 0;
+		m_thID = std::this_thread::get_id();
 		memset(m_memPool, 0, sizeof(m_memPool));
 	}
 
@@ -121,34 +125,34 @@ protected:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// 从内存池中取出空闲节点
-	inline MEM_NODE * Pop(int pool);
+	inline MEM_NODE * Pop(unsigned short nPoolID);
 
 	// 把一个新节点放进内存池
-	inline void Push(int pool, MEM_NODE * node);
+	inline void Push(unsigned short nPoolID, MEM_NODE * pNode);
 
 	// 创建新的节点
-	inline void AddNode(int pool);
+	inline void AddNode(unsigned short nPoolID);
 
 	// 检查内存池存量,如果存量远大于需求则尝试释放
-	inline void CheckMempoolStore(int pool);
+	inline void CheckMempoolStore(unsigned short nPoolID);
 
 	// 释放大内存池
-	inline void FreeLargeMempool(int pool);
+	inline void FreeLargeMempool(unsigned short nPoolID);
 
 	// 释放小内存池
-	inline void FreeSmallMempool(int pool);
+	inline void FreeSmallMempool(unsigned short nPoolID);
 
 protected:
 	struct MEM_POOL
 	{
-		MEM_NODE		*pFreeHead = nullptr;			// 内存池空闲头节点
+		MEM_NODE		*pFreeHead = nullptr;	// 内存池空闲头节点
 		unsigned long	nAlloted = 0;			// 单位时间内已分配内存次数
 		unsigned long	nFreeNum = 0;			// 剩余内存块数
 		unsigned long	nAverNeed = 0;			// 单位时间内的平均需求量(MTMP_STATISTIC_INTERVAL指定)
 		unsigned long	nLastStatistic = 0;		// 最后统计时间
 	};
 
-	unsigned long m_id = 0; // 默认记得是线程ID
+	std::thread::id m_thID; // 默认记得是线程ID
 	MEM_POOL m_memPool[MTMP_POOL_SIZE] = { 0 }; // 内存池数组
 };
 
@@ -166,34 +170,25 @@ public:
 	}
 
 	// 分配内存
-	void * Allocate(size_t size)
+	void * Allocate(size_t nSize)
 	{
-		return TLS_MemPool()->Allocate(size);
+		return TLS_GetMemPool()->Allocate(nSize);
 	}
 
 	// 重新分配内存
-	void * Reallocate(void * p, size_t size)
+	void * Reallocate(void * p, size_t nSize)
 	{
-		return TLS_MemPool()->Reallocate(p, size);
+		return TLS_GetMemPool()->Reallocate(p, nSize);
 	}
 
 	// 释放内存
 	void Deallocate(void * p)
 	{
-		TLS_MemPool()->Deallocate(p);
+		TLS_GetMemPool()->Deallocate(p);
 	}
 
 	// 通过Thread Local Storage取得当前线程对应的内存池
-	MT_MemPool * TLS_MemPool();
-
-	// 构造
-	MT_Allocator()
-	{
-		m_dwTLSIndex = ::TlsAlloc();
-	}
-
-protected:
-	DWORD m_dwTLSIndex = 0;
+	MT_MemPool * TLS_GetMemPool();
 };
 
 #pragma pack()

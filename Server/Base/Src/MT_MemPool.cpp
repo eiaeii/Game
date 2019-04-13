@@ -1,36 +1,39 @@
 ﻿#include "MT_MemPool.h"
 #include <set>
+#include <chrono>
+
+thread_local MT_MemPool *g_pMemPool = nullptr;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-void * MT_MemPool::Allocate(size_t size)
+void * MT_MemPool::Allocate(size_t nSize)
 {
 	// 不能分配0字节
-	if (0 == size)
+	if (0 == nSize)
 	{
-		size = 1;
+		nSize = 1;
 	}
 
 	// 超大内存
-	if (size >= MTMP_MAX_SIZE)
+	if (nSize >= MTMP_MAX_SIZE)
 	{
-		MEM_NODE * pNode = (MEM_NODE *)malloc(size + sizeof(MEM_NODE));
+		MEM_NODE * pNode = (MEM_NODE *)malloc(nSize + sizeof(MEM_NODE));
 		pNode->_system_block.bPoolNode = 0;
-		pNode->_system_block.block_len = size;
+		pNode->_system_block.block_len = nSize;
 		return pNode + 1;
 	}
 	else
 	{
-		auto GetMemPoolID = [](size_t nSize)
+		auto GetMemPoolID = [](size_t n) -> unsigned short
 		{
-			return (((nSize + MTMP_ALIGN - 1) & ~(MTMP_ALIGN - 1)) - 1) >> MTMP_SHIFT;
+			return (((n + MTMP_ALIGN - 1) & ~(MTMP_ALIGN - 1)) - 1) >> MTMP_SHIFT;
 		};
-		int pool = (int)GetMemPoolID(size);
-		MEM_NODE * pNode = Pop(pool);
+		unsigned short nPoolID = GetMemPoolID(nSize);
+		MEM_NODE * pNode = Pop(nPoolID);
 
 		while (nullptr == pNode)
 		{
-			AddNode(pool);
-			pNode = Pop(pool);
+			AddNode(nPoolID);
+			pNode = Pop(nPoolID);
 		}
 
 		return pNode + 1;
@@ -38,10 +41,10 @@ void * MT_MemPool::Allocate(size_t size)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-void * MT_MemPool::Reallocate(void * p, size_t size)
+void * MT_MemPool::Reallocate(void * p, size_t nSize)
 {
 	// size=0等同于free
-	if (0 == size)
+	if (0 == nSize)
 	{
 		Deallocate(p);
 		return 0;
@@ -50,7 +53,7 @@ void * MT_MemPool::Reallocate(void * p, size_t size)
 	// 传入null等同alloc
 	if (nullptr == p)
 	{
-		return Allocate(size);
+		return Allocate(nSize);
 	}
 
 	MEM_NODE * pNode = (MEM_NODE *)p - 1;
@@ -63,23 +66,23 @@ void * MT_MemPool::Reallocate(void * p, size_t size)
 	}
 	else
 	{
-		int pool = 0;
+		unsigned short nPoolID = 0;
 		if (pNode->_node_l.bIsLarge)
-			pool = pNode->_node_l.nPoolID;
+			nPoolID = pNode->_node_l.nPoolID;
 		else
-			pool = pNode->_node_s.nPoolID;
+			nPoolID = pNode->_node_s.nPoolID;
 
-		auto GetPoolNodeSize = [](int pool)
+		auto GetPoolNodeSize = [](unsigned short nID)
 		{
-			return (pool << MTMP_SHIFT) + MTMP_ALIGN;
+			return (nID << MTMP_SHIFT) + MTMP_ALIGN;
 		};
 
-		block_len = GetPoolNodeSize(pool);
+		block_len = GetPoolNodeSize(nPoolID);
 	}
 
 	// 长度不够则重新分配
-	void * new_ptr = Allocate(size);
-	memcpy(new_ptr, p, block_len >= size ? size : block_len);
+	void * new_ptr = Allocate(nSize);
+	memcpy(new_ptr, p, block_len >= nSize ? nSize : block_len);
 	Deallocate(p);
 	return new_ptr;
 }
@@ -104,27 +107,27 @@ void MT_MemPool::Deallocate(void * p)
 	if (pNode->_node_l.bIsLarge == 1)
 	{
 		// 放回回收站
-		int pool = pNode->_node_l.nPoolID;
-		Push(pool, pNode);
+		unsigned short nPoolID = pNode->_node_l.nPoolID;
+		Push(nPoolID, pNode);
 
 		// 检查库存
-		CheckMempoolStore(pool);
+		CheckMempoolStore(nPoolID);
 	}
 	else
 	{
 		// 放回回收站
-		int pool = pNode->_node_s.nPoolID;
-		Push(pool, pNode);
+		unsigned short nPoolID = pNode->_node_s.nPoolID;
+		Push(nPoolID, pNode);
 
 		// 检查库存
-		CheckMempoolStore(pool);
+		CheckMempoolStore(nPoolID);
 	}
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-MT_MemPool::MEM_NODE * MT_MemPool::Pop(int pool)
+MT_MemPool::MEM_NODE * MT_MemPool::Pop(unsigned short nPoolID)
 {
-	MEM_POOL & mem_pool = m_memPool[pool];
+	MEM_POOL & mem_pool = m_memPool[nPoolID];
 
 	MEM_NODE * pNode = mem_pool.pFreeHead;
 	if (pNode)
@@ -140,9 +143,9 @@ MT_MemPool::MEM_NODE * MT_MemPool::Pop(int pool)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-void MT_MemPool::Push(int pool, MEM_NODE * pNode)
+void MT_MemPool::Push(unsigned short nPoolID, MEM_NODE * pNode)
 {
-	MEM_POOL & mem_pool = m_memPool[pool];
+	MEM_POOL & mem_pool = m_memPool[nPoolID];
 	pNode->_node_s.bAllotted = 0;
 	pNode->pNext = mem_pool.pFreeHead;
 	mem_pool.pFreeHead = pNode;
@@ -151,13 +154,13 @@ void MT_MemPool::Push(int pool, MEM_NODE * pNode)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-void MT_MemPool::AddNode(int pool)
+void MT_MemPool::AddNode(unsigned short nPoolID)
 {
-	auto GetPoolNodeSize = [](int pool)
+	auto GetPoolNodeSize = [](unsigned short nID)
 	{
-		return (pool << MTMP_SHIFT) + MTMP_ALIGN;
+		return (nID << MTMP_SHIFT) + MTMP_ALIGN;
 	};
-	size_t size = GetPoolNodeSize(pool);
+	size_t size = GetPoolNodeSize(nPoolID);
 
 	if (size < MTMP_SMALL_SIZE)
 	{
@@ -169,10 +172,10 @@ void MT_MemPool::AddNode(int pool)
 		for (int i = 0; i < MTMP_GROW; ++i)
 		{
 			pNode->_node_s.bIsLarge = 0;
-			pNode->_node_s.nPoolID = pool;
+			pNode->_node_s.nPoolID = nPoolID;
 			pNode->_node_s.nIndex = i;
 
-			Push(pool, pNode);
+			Push(nPoolID, pNode);
 
 			pNode = (MEM_NODE*)(((const char *)pNode) + size);
 		}
@@ -182,17 +185,18 @@ void MT_MemPool::AddNode(int pool)
 		size += sizeof(MEM_NODE);
 		MEM_NODE * pNode = (MEM_NODE *)malloc(size);
 		pNode->_node_l.bIsLarge = 1;
-		pNode->_node_l.nPoolID = pool;
+		pNode->_node_l.nPoolID = nPoolID;
 
-		Push(pool, pNode);
+		Push(nPoolID, pNode);
 	}
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-void MT_MemPool::CheckMempoolStore(int pool)
+void MT_MemPool::CheckMempoolStore(unsigned short nPoolID)
 {
-	MEM_POOL & mem_pool = m_memPool[pool];
-	unsigned long now = GetTickCount();
+	MEM_POOL & mem_pool = m_memPool[nPoolID];
+	auto tickNow = std::chrono::steady_clock::now().time_since_epoch().count();
+	unsigned long now = unsigned long(tickNow >> 20);
 	unsigned long dt = now - mem_pool.nLastStatistic;
 
 	if (dt > MTMP_STATISTIC_INTERVAL)
@@ -211,18 +215,18 @@ void MT_MemPool::CheckMempoolStore(int pool)
 		mem_pool.nAverNeed = (need + mem_pool.nAverNeed) / 2;
 
 		// 库存是否超过
-		auto GetPoolNodeSize = [](int pool)
+		auto GetPoolNodeSize = [](unsigned short pool)
 		{
 			return (pool << MTMP_SHIFT) + MTMP_ALIGN;
 		};
-		size_t size = GetPoolNodeSize(pool);
+		size_t size = GetPoolNodeSize(nPoolID);
 
 		if (size < MTMP_SMALL_SIZE)
 		{
 			// 小内存释放原则: 超过平均需求量的4倍
 			if (mem_pool.nFreeNum > mem_pool.nAverNeed * MTMP_SMALL_STORAGE)
 			{
-				FreeSmallMempool(pool);
+				FreeSmallMempool(nPoolID);
 			}
 		}
 		else
@@ -230,7 +234,7 @@ void MT_MemPool::CheckMempoolStore(int pool)
 			// 大内存释放原则: 超过平均需求量即释放
 			if (mem_pool.nFreeNum > mem_pool.nAverNeed * MTMP_LARGE_STORAGE)
 			{
-				FreeLargeMempool(pool);
+				FreeLargeMempool(nPoolID);
 			}
 		}
 
@@ -241,14 +245,14 @@ void MT_MemPool::CheckMempoolStore(int pool)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-void MT_MemPool::FreeLargeMempool(int pool)
+void MT_MemPool::FreeLargeMempool(unsigned short nPoolID)
 {
-	MEM_POOL & mem_pool = m_memPool[pool];
+	MEM_POOL & mem_pool = m_memPool[nPoolID];
 
 	// 释放大内存池至需求量以下
 	while (mem_pool.nFreeNum > mem_pool.nAverNeed)
 	{
-		MEM_NODE * pNode = Pop(pool);
+		MEM_NODE * pNode = Pop(nPoolID);
 		if (pNode)
 		{
 			free(pNode);
@@ -261,59 +265,59 @@ void MT_MemPool::FreeLargeMempool(int pool)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-void MT_MemPool::FreeSmallMempool(int pool)
+void MT_MemPool::FreeSmallMempool(unsigned short nPoolID)
 {
-	MEM_POOL & mem_pool = m_memPool[pool];
+	MEM_POOL & mem_pool = m_memPool[nPoolID];
 
 	// 释放小内存池至需求量以下
 
 	std::set<MEM_NODE *> node_set;
 
-	MEM_NODE * pNode = Pop(pool);
+	MEM_NODE * pNode = Pop(nPoolID);
 	while (pNode)
 	{
 		node_set.insert(pNode);
-		pNode = Pop(pool);
+		pNode = Pop(nPoolID);
 	}
 
-	auto GetPoolNodeSize = [](int pool)
+	auto GetPoolNodeSize = [](unsigned short nID)
 	{
-		return (pool << MTMP_SHIFT) + MTMP_ALIGN;
+		return (nID << MTMP_SHIFT) + MTMP_ALIGN;
 	};
 
-	size_t size = GetPoolNodeSize(pool);
+	size_t size = GetPoolNodeSize(nPoolID);
 	size += sizeof(MEM_NODE);
 
 	// 优先释放连续的内存
-	MEM_NODE * head_node = nullptr;
+	MEM_NODE * pHeadNode = nullptr;
 	size_t continued_num = 0;
 	std::set<MEM_NODE *>::iterator it = node_set.begin();
 	for (; it != node_set.end(); )
 	{
-		MEM_NODE * node = *it;
+		MEM_NODE * pOneNode = *it;
 		++it;
 
-		size_t block_index = node->_node_s.nIndex;
+		size_t block_index = pOneNode->_node_s.nIndex;
 
-		if (head_node)
+		if (pHeadNode)
 		{
 			// 是否和当前检查的节点是同一块内存
-			if (continued_num + 1 == block_index && size_t(node - head_node) == block_index * size)
+			if (continued_num + 1 == block_index && size_t(pOneNode - pHeadNode) == block_index * size)
 			{
 				++continued_num;
 
 				// 找到一块完整内存可以释放
 				if (block_index == MTMP_GROW - 1)
 				{
-					char * free_ptr = (char*)head_node;
+					char * free_ptr = (char*)pHeadNode;
 					for (int i = 0; i < MTMP_GROW; ++i)
 					{
 						node_set.erase((MEM_NODE*)free_ptr);
 						free_ptr += size;
 					}
 
-					free(head_node);
-					head_node = nullptr;
+					free(pHeadNode);
+					pHeadNode = nullptr;
 					continued_num = 0;
 
 					// 库存量已经低于需求量了
@@ -328,12 +332,12 @@ void MT_MemPool::FreeSmallMempool(int pool)
 
 		if (block_index == 0)
 		{
-			head_node = node;
+			pHeadNode = pOneNode;
 			continued_num = 0;
 		}
 		else
 		{
-			head_node = 0;
+			pHeadNode = 0;
 			continued_num = 0;
 		}
 	}
@@ -341,39 +345,35 @@ void MT_MemPool::FreeSmallMempool(int pool)
 	// 将不能释放的内存放回去
 	for (it = node_set.begin(); it != node_set.end(); ++it)
 	{
-		Push(pool, *it);
+		Push(nPoolID, *it);
 	}
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 通过Thread Local Storage取得当前线程对应的内存池
-MT_MemPool * MT_Allocator::TLS_MemPool()
+MT_MemPool * MT_Allocator::TLS_GetMemPool()
 {
-	MT_MemPool * pool = (MT_MemPool*)::TlsGetValue(m_dwTLSIndex);
-	if (nullptr == pool)
+	if (nullptr == g_pMemPool)
 	{
-		pool = (MT_MemPool*)malloc(sizeof(MT_MemPool));
-		pool->Restore();
-
-		BOOL bSet = ::TlsSetValue(m_dwTLSIndex, pool);
-		assert(bSet);
-		return pool;
+		g_pMemPool = (MT_MemPool*)malloc(sizeof(MT_MemPool));
+		g_pMemPool->ReSet();
+		assert(g_pMemPool);
 	}
 
-	return pool;
+	return g_pMemPool;
 }
 
-void* mt_alloc(size_t s)
+void* MT_Alloc(size_t nSize)
 {
-	return MT_Allocator::GetInstance().Allocate(s);
+	return MT_Allocator::GetInstance().Allocate(nSize);
 }
 
-void* mt_realloc(void* p, size_t s)
+void* MT_ReAlloc(void* p, size_t nSize)
 {
-	return MT_Allocator::GetInstance().Reallocate(p, s);
+	return MT_Allocator::GetInstance().Reallocate(p, nSize);
 }
 
-void  mt_free(void* p)
+void MT_Free(void* p)
 {
 	MT_Allocator::GetInstance().Deallocate(p);
 }
