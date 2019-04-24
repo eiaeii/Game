@@ -196,7 +196,7 @@ void MT_MemPool::CheckMempoolStore(unsigned short nPoolID)
 {
 	MEM_POOL & mem_pool = m_memPool[nPoolID];
 	auto tickNow = std::chrono::steady_clock::now().time_since_epoch().count();
-	unsigned long now = unsigned long(tickNow >> 20);
+	unsigned long now = (unsigned long)(tickNow >> 20);
 	unsigned long dt = now - mem_pool.nLastStatistic;
 
 	if (dt > MTMP_STATISTIC_INTERVAL)

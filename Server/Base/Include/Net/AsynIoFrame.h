@@ -4,7 +4,7 @@
 #include "NetDefine.h"
 
 struct IAsynIoHandler;
-struct IAsynIoBuffer;
+struct AsynIoBuffer;
 struct IAsynIoDevice;
 struct IAsynIoResult;
 
@@ -35,9 +35,9 @@ struct IAsynIoResult : public epoll_event
 
 	virtual void PrepareBuffer(unsigned long nLen) = 0;
 
-	virtual void SetAsynIoBuffer(IAsynIoBuffer* pBufferList, unsigned long nBufferCount) = 0;
+	virtual void SetAsynIoBuffer(AsynIoBuffer* pBufferList, unsigned long nBufferCount) = 0;
 
-	virtual IAsynIoBuffer* GetAsynIoBufferList() = 0;
+	virtual AsynIoBuffer* GetAsynIoBufferList() = 0;
 
 	virtual unsigned long GetAsynIoBufferCount() const = 0;
 

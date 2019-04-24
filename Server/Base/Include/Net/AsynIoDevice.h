@@ -30,6 +30,8 @@ struct IAsynIoDevice
 	virtual void CloseDevice() = 0;
 
 	virtual void Release(bool bForce = false) = 0;
+
+	virtual void AddRef() = 0;
 };
 
 #endif // ASYNIODEVICE_H

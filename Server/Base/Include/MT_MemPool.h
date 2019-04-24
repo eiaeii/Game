@@ -1,14 +1,16 @@
 ﻿#ifndef __MULTI_THREAD_MEMORY_POOL_EDITION_2_H__
 #define __MULTI_THREAD_MEMORY_POOL_EDITION_2_H__
 
+#include <assert.h>
+#include <thread>
+#include <stdio.h>
+#include <memory.h>
+
+#pragma pack(1)
+
 extern void* MT_Alloc(size_t nSize);
 extern void* MT_ReAlloc(void *p, size_t nSize);
 extern void  MT_Free(void *p);
-
-#include <assert.h>
-#include <thread>
-
-#pragma pack(1)
 
 class MT_MemPool;
 extern thread_local MT_MemPool *g_pMemPool;

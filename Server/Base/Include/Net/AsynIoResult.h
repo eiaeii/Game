@@ -21,9 +21,9 @@ public:
 
 	void PrepareBuffer(unsigned long nLen) override;
 
-	void SetAsynIoBuffer(IAsynIoBuffer* pBufferList, unsigned long nBufferCount) override;
+	void SetAsynIoBuffer(AsynIoBuffer* pBufferList, unsigned long nBufferCount) override;
 
-	IAsynIoBuffer* GetAsynIoBufferList() override;
+	AsynIoBuffer* GetAsynIoBufferList() override;
 
 	unsigned long GetAsynIoBufferCount() const override;
 
