@@ -14,7 +14,7 @@ struct IProactor
 
 	virtual bool ResgisterAsynIoDevice(IAsynIoDevice *pDevice) = 0;
 
-	virtual bool HandleEvents(unsigned long nTimeOut = 0xFFFFFFFF) = 0;
+	virtual bool HandleEvents(unsigned long nTimeOut = -1) = 0;
 
 	virtual void HandleEventsLoop() = 0;
 

@@ -15,7 +15,7 @@ class Proactor : public IProactor
 
 	bool ResgisterAsynIoDevice(IAsynIoDevice *pDevice) override;
 
-	bool HandleEvents(unsigned long nTimeOut = INFINITE) override;
+	bool HandleEvents(unsigned long nTimeOut = -1) override;
 
 	void HandleEventsLoop() override;
 

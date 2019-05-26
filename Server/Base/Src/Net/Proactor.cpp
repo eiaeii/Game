@@ -38,7 +38,7 @@ bool Proactor::ResgisterAsynIoDevice(IAsynIoDevice * pDevice)
 	HANDLE pHandle = ::CreateIoCompletionPort(pDevice->GetHandle(), m_hCompletePort, (ULONG_PTR)pDevice, m_nConcurrentThreadsNum);
 	return pHandle == m_hCompletePort;
 #else
-
+	return true;
 #endif // _WINDOWS
 }
 
@@ -98,7 +98,7 @@ bool Proactor::HandleEvents(unsigned long nTimeOut)
 		}
 	}
 #else
-	
+	return true;
 #endif // _WINDOWS
 }
 
@@ -110,5 +110,10 @@ void Proactor::HandleEventsLoop()
 bool Proactor::PostCompletion(IAsynIoResult * pResult)
 {
 	pResult->SetSimulation(true);
+
+#ifdef _WINDOWS
 	return ::PostQueuedCompletionStatus(m_hCompletePort, 0, 0, pResult) == TRUE;
+#else
+	return true;
+#endif
 }
