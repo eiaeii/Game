@@ -38,6 +38,8 @@ aux_source_directory(../Common/Src DIR_COMMON)
 aux_source_directory(./WebServer/Src DIR_WebServer)
 
 if (MSVC)
+	add_definitions(-DWIN32_LEAN_AND_MEAN)
+
 	add_compile_options ("/W4")
 	add_compile_options ("/WX")
 	add_compile_options ("/std:c++17")
