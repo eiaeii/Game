@@ -26,8 +26,9 @@ include_directories(
 ./Include
 ../Base/Include
 ../Base/Include/Net
-../CommonDefine
 ../ExportDefine
+../Base/Include/LuaJIT
+../Base/Include/ZeroMQ
 )
 
 #设置库目录
@@ -54,8 +55,10 @@ else ()
 	
 	#附加库
 	link_libraries(Base stdc++ pthread stdc++fs)
-	#luajit支持
+	#luajit
 	link_libraries(luajit m dl)
+	#luajit
+	link_libraries(libzmq m dl)
 endif ()
 
 #生成可执行程序

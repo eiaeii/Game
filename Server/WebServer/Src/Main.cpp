@@ -5,6 +5,7 @@
 
 #include "LuaEngine.h"
 #include "WebServer.h"
+//#include "zmq.h"
 
 bool StarServer()
 {

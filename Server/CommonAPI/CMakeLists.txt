@@ -27,6 +27,7 @@ include_directories(
 ../Base/Include
 ../Base/Include/Net
 ../ExportDefine
+../Base/Include/LuaJIT
 )
 
 #设置库目录
