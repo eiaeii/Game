@@ -36,8 +36,6 @@ endif ()
 #包含路径
 include_directories(
 ./Include
-./Include/Net
-../ExportDefine
 ./Include/LuaJIT
 ./Include/ZeroMQ
 )

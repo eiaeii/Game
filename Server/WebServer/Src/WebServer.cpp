@@ -1,7 +1,6 @@
 #include "WebServer.h"
 #include "Log.h"
 #include "LuaEngine.h"
-#include "API.h"
 
 CWebServer::~CWebServer()
 {
@@ -15,13 +14,11 @@ bool CWebServer::InitServer()
 		return false;
 	}
 
-	if (!CreateLuaEngine())
+	/*if (!CreateLuaEngine())
 	{
 		SaveAssertLog("Lua“˝«Ê ≥ı ºªØ ß∞‹£° Function:%s, Line:%d", __FUNCTION__, __LINE__);
 		return false;
-	}
-
-	SetServerProvider(this);
+	}*/
 
 	return true;
 }

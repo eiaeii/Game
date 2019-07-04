@@ -1,9 +1,8 @@
 #ifndef _Log_HPP
 #define _Log_HPP
 
-#include "API.h"
 #include "TimeManager.h"
-
+#include "CommonDefine.h"
 #include <vector>
 #include <string>
 #include <atomic>

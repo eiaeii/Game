@@ -1,11 +1,8 @@
 #include <cstdio>
 #include <iostream>
 #include <string>
-#include <locale.h>
-
-#include "LuaEngine.h"
+#include "Log.h"
 #include "WebServer.h"
-//#include "zmq.h"
 
 bool StarServer()
 {
@@ -37,14 +34,6 @@ bool StarServer()
 		{
 			CWebServer::Instance()->Stop();
 			break;
-		}
-		else if (strCMD.find(".lua") != std::string::npos)
-		{
-			GetLuaEngine()->LoadLuaFile(strCMD.c_str());
-		}
-		else
-		{
-			GetLuaEngine()->DoString(strCMD.c_str());
 		}
 	}
 

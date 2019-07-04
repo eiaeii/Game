@@ -25,8 +25,6 @@ add_definitions(-DUNICODE -D_UNICODE)
 include_directories(
 ./Include
 ../Base/Include
-../Base/Include/Net
-../ExportDefine
 ../Base/Include/LuaJIT
 ../Base/Include/ZeroMQ
 )
