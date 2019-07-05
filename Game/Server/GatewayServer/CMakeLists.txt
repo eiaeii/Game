@@ -43,8 +43,8 @@ if (MSVC)
 	add_compile_options ("/WX")
 	add_compile_options ("/std:c++17")
 	add_compile_options ("/MP")
-	add_compile_options ("/MD")
-	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:LIBCMT")
+	add_compile_options ("/MT")
+	#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:LIBCMT")
 
 	#附加库
 	link_libraries(Base libzmq)
