@@ -1,11 +1,11 @@
-#include "WebServer.h"
+#include "GatewayServer.h"
 #include "Log.h"
 
-CWebServer::~CWebServer()
+GatewayServer::~GatewayServer()
 {
 }
 
-bool CWebServer::InitServer()
+bool GatewayServer::InitServer()
 {
 	if (!CreateLogSystem())
 	{
@@ -16,16 +16,16 @@ bool CWebServer::InitServer()
 	return true;
 }
 
-bool CWebServer::Start()
+bool GatewayServer::Start()
 {
 	return IThread::Start();
 }
 
-void CWebServer::ProcessLogic()
+void GatewayServer::ProcessLogic()
 {
 }
 
-bool CWebServer::BeginStop()
+bool GatewayServer::BeginStop()
 {
 	return true;
 }

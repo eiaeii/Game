@@ -1,5 +1,5 @@
 ﻿#工程名字
-project(WebServer)
+project(GatewayServer)
 
 #cmake最低版本
 cmake_minimum_required(VERSION 3.9.2)
@@ -60,4 +60,4 @@ else ()
 endif ()
 
 #生成可执行程序
-add_executable(WebServer ${DIR_SRCS})
+add_executable(GatewayServer ${DIR_SRCS})
