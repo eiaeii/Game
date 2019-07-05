@@ -30,7 +30,7 @@ include_directories(
 
 #设置库目录
 link_directories(./Lib)
-link_directories(../../Public/Lib)
+link_directories(../Public/Lib)
 
 #源文件路径
 aux_source_directory(./Src DIR_SRCS)
@@ -43,6 +43,9 @@ if (MSVC)
 	add_compile_options ("/std:c++17")
 	add_compile_options ("/MP")
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:LIBCMT")
+
+	#libzmq
+	link_libraries(libzmq)
 
 else ()
 	add_compile_options ("-Wall")
