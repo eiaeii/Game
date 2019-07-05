@@ -3,12 +3,13 @@
 
 #include "Singleton.hpp"
 #include "IThread.h"
+#include "Log.h"
 
-class GatewayServer : public IThread,
-	public CSingleton<GatewayServer>
+class CGatewayServer : public IThread,
+	public CSingleton<CGatewayServer>
 {
 public:
-	~GatewayServer();
+	~CGatewayServer();
 	bool InitServer();
 	bool Start();
 

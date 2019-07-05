@@ -1,11 +1,11 @@
 #include "GatewayServer.h"
 #include "Log.h"
 
-GatewayServer::~GatewayServer()
+CGatewayServer::~CGatewayServer()
 {
 }
 
-bool GatewayServer::InitServer()
+bool CGatewayServer::InitServer()
 {
 	if (!CreateLogSystem())
 	{
@@ -16,16 +16,16 @@ bool GatewayServer::InitServer()
 	return true;
 }
 
-bool GatewayServer::Start()
+bool CGatewayServer::Start()
 {
 	return IThread::Start();
 }
 
-void GatewayServer::ProcessLogic()
+void CGatewayServer::ProcessLogic()
 {
 }
 
-bool GatewayServer::BeginStop()
+bool CGatewayServer::BeginStop()
 {
 	return true;
 }
