@@ -31,6 +31,7 @@ include_directories(
 
 #设置库目录
 link_directories(../Lib)
+link_directories(../../Public/Lib)
 
 #源文件路径
 aux_source_directory(./Src DIR_SRCS)
@@ -45,7 +46,7 @@ if (MSVC)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:LIBCMT")
 
 	#附加库
-	link_libraries(Base buildvm lua51 luajit)
+	link_libraries(Base libzmq)
 else ()
 	add_compile_options ("-Wall")
 	add_compile_options ("-std=c++17")
@@ -53,9 +54,8 @@ else ()
 	
 	#附加库
 	link_libraries(Base stdc++ pthread stdc++fs)
-	#luajit
-	link_libraries(luajit m dl)
-	#luajit
+
+	#libzmq
 	link_libraries(libzmq m dl)
 endif ()
 

@@ -54,7 +54,9 @@ void IThread::ThreadFunction(void *pParm)
 	while (true)
 	{
 		if (pThread->Run())
+		{
 			pThread->Sleep();
+		}
 		else
 		{
 			pThread->BeginStop();
