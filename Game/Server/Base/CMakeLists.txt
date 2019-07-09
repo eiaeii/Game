@@ -19,14 +19,18 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/../Lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/../Lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${PROJECT_SOURCE_DIR}/../Lib)
 
-add_definitions(-DUNICODE -D_UNICODE)
-
 if (MSVC)
 	add_compile_options ("/W4")
 	add_compile_options ("/WX")
 	add_compile_options ("/std:c++17")
 	add_compile_options ("/MP")
-	add_compile_options ("/MT")
+
+	if (CMAKE_BUILD_TYPE MATCHES DEBUG)
+		add_compile_options ("/MTd")
+    else()
+		add_compile_options ("/MT")
+	endif()
+
 else ()
 	add_compile_options ("-Wall")
 	add_compile_options ("-std=c++17")

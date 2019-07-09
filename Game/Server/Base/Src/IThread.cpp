@@ -31,11 +31,6 @@ bool IThread::Stop()
 	// ÉèÖÃÏß³ÌÍ£Ö¹
 	this->SetStatus(ThreadStatus::THREAD_STATUS_EXITING);
 
-	while (m_btStatus != ThreadStatus::THREAD_STATUS_EXIT)
-	{
-		Sleep();
-	}
-
 	this->SetStatus(ThreadStatus::THREAD_STATUS_READY);
 
 	return true;
