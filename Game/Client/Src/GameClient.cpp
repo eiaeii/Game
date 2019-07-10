@@ -1,11 +1,11 @@
-#include "GatewayServer.h"
+#include "GameClient.h"
 #include "Log.h"
 
-CGatewayServer::~CGatewayServer()
+CGameClient::~CGameClient()
 {
 }
 
-bool CGatewayServer::InitServer()
+bool CGameClient::InitClient()
 {
 	if (!CreateLogSystem())
 	{
@@ -27,17 +27,17 @@ bool CGatewayServer::InitServer()
 		return false;
 	}
 
-	zmq_bind(m_pZmqSocket, "tcp://*5555");
-
+	zmq_connect(m_pZmqSocket, "tcp://localhost:5555");
+	
 	return true;
 }
 
-bool CGatewayServer::Start()
+bool CGameClient::Start()
 {
 	return IThread::Start();
 }
 
-void CGatewayServer::ProcessLogic()
+void CGameClient::ProcessLogic()
 {
 	zmq_msg_t msg;
 	zmq_msg_init(&msg);
@@ -46,7 +46,7 @@ void CGatewayServer::ProcessLogic()
 	zmq_msg_close(&msg);
 }
 
-bool CGatewayServer::BeginStop()
+bool CGameClient::BeginStop()
 {
 	zmq_close(&m_pZmqSocket);
 	zmq_term(&m_pZmqContext);

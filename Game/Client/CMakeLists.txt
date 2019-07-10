@@ -19,13 +19,13 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/../Bin/Client)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/../Bin/Client)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${PROJECT_SOURCE_DIR}/../Bin/Client)
 
-add_definitions(-DUNICODE -D_UNICODE)
+add_definitions(-DUNICODE -D_UNICODE -DZMQ_STATIC)
 
 #包含路径
 include_directories(
 ./Include
-../../Public/Include
-../../Public/Include/ZeroMQ
+../Public/Include
+../Public/Include/ZeroMQ
 )
 
 #设置库目录
@@ -42,10 +42,17 @@ if (MSVC)
 	add_compile_options ("/WX")
 	add_compile_options ("/std:c++17")
 	add_compile_options ("/MP")
-	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:LIBCMT")
+	
+	if (CMAKE_BUILD_TYPE MATCHES DEBUG)
+		add_compile_options ("/MTd")
+    else()
+		add_compile_options ("/MT")
+	endif()
 
 	#libzmq
 	link_libraries(libzmq)
+	link_libraries(Ws2_32)
+	link_libraries(Iphlpapi)
 
 else ()
 	add_compile_options ("-Wall")
