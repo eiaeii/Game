@@ -14,6 +14,8 @@ public:
 	bool InitClient();
 	bool Start();
 
+	void SendMsg(const char *pMsg, size_t nLength);
+
 private:
 	void ProcessLogic();
 	bool BeginStop();

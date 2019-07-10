@@ -53,3 +53,8 @@ bool CGameClient::BeginStop()
 
 	return true;
 }
+
+void CGameClient::SendMsg(const char *pMsg, size_t nLength)
+{
+	zmq_send(m_pZmqSocket, pMsg, nLength, ZMQ_DONTWAIT);
+}

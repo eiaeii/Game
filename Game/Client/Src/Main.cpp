@@ -3,7 +3,7 @@
 #include <string>
 #include "GameClient.h"
 
-bool StarServer()
+bool StarClient()
 {
 	if (!CGameClient::Instance()->InitClient())
 	{
@@ -34,6 +34,10 @@ bool StarServer()
 			CGameClient::Instance()->Stop();
 			break;
 		}
+		else
+		{
+			CGameClient::Instance()->SendMsg(strCMD.c_str(), strCMD.length());
+		}
 	}
 
 	return true;
@@ -41,9 +45,9 @@ bool StarServer()
 
 int main()
 {
-	if (!StarServer())
+	if (!StarClient())
 	{
-		printf("GatewayServer Start Failed!\n");
+		printf("Client Start Failed!\n");
 	}
 
 	return 0;
