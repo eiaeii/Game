@@ -7,17 +7,17 @@ bool StarClient()
 {
 	if (!CGameClient::Instance()->InitClient())
 	{
-		SaveAssertLog("GatewayServer ³õÊ¼»¯Ê§°Ü£¡ Function:%s, Line:%d", __FUNCTION__, __LINE__);
+		SaveAssertLog("Client ³õÊ¼»¯Ê§°Ü£¡ Function:%s, Line:%d", __FUNCTION__, __LINE__);
 		return false;
 	}
 
 	if (!CGameClient::Instance()->Start())
 	{
-		SaveAssertLog("GatewayServer Æô¶¯Ê§°Ü£¡ Function:%s, Line:%d", __FUNCTION__, __LINE__);
+		SaveAssertLog("Client Æô¶¯Ê§°Ü£¡ Function:%s, Line:%d", __FUNCTION__, __LINE__);
 		return false;
 	}
 
-	printf("GatewayServer Start Succeed!\n");
+	printf("Client Start Succeed!\n");
 
 	std::string strCMD;
 	while (true)

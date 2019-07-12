@@ -20,14 +20,20 @@ bool CGatewayServer::InitServer()
 		return false;
 	}
 
-	m_pZmqSocket = zmq_socket(m_pZmqContext, ZMQ_REP);
+	m_pZmqSocket = zmq_socket(m_pZmqContext, ZMQ_ROUTER);
 	if (nullptr == m_pZmqSocket)
 	{
 		printf("[Error]zmq_socket Ê§°Ü! Function:%s, Line:%d\n", __FUNCTION__, __LINE__);
 		return false;
 	}
 
-	zmq_bind(m_pZmqSocket, "tcp://*5555");
+	zmq_msg_init(&m_zmqMsg);
+	int rc = zmq_bind(m_pZmqSocket, "tcp://*:5555");
+	if (rc < 0)
+	{
+		printf("error in zmq_bind: %s\n", zmq_strerror(errno));
+		return false;
+	}
 
 	return true;
 }
@@ -39,17 +45,25 @@ bool CGatewayServer::Start()
 
 void CGatewayServer::ProcessLogic()
 {
-	zmq_msg_t msg;
-	zmq_msg_init(&msg);
-	zmq_recvmsg(m_pZmqSocket, &msg, 0);
-	printf("ProcessLogic recvmsg");
-	zmq_msg_close(&msg);
+	/*int rc = zmq_msg_recv(&m_zmqMsg, m_pZmqSocket, 0);
+	if (rc < 0)
+	{
+		printf("error in zmq_msg_recv: %s\n", zmq_strerror(errno));
+		return;
+	}
+
+	char szMsg[128] = { 0 };
+	memcpy(szMsg, zmq_msg_data(&m_zmqMsg), zmq_msg_size(&m_zmqMsg));
+	printf(szMsg);
+	printf("\n");*/
+	s_dump();
 }
 
 bool CGatewayServer::BeginStop()
 {
 	zmq_close(&m_pZmqSocket);
 	zmq_term(&m_pZmqContext);
+	zmq_msg_close(&m_zmqMsg);
 
 	return true;
 }

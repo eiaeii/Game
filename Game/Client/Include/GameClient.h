@@ -24,6 +24,7 @@ private:
 
 	void *m_pZmqContext = nullptr;
 	void *m_pZmqSocket = nullptr;
+	zmq_msg_t m_zmqMsg;
 };
 
 #endif // _GAMECLIENT_H
