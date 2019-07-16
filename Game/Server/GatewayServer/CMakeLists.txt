@@ -44,11 +44,8 @@ if (MSVC)
 	add_compile_options ("/std:c++17")
 	add_compile_options ("/MP")
 
-	if (CMAKE_BUILD_TYPE MATCHES DEBUG)
-		add_compile_options ("/MTd")
-    else()
-		add_compile_options ("/MT")
-	endif()
+	add_compile_options ("/MTd")
+	#add_compile_options ("/MT")
 	
 	#附加库
 	link_libraries(Base)
