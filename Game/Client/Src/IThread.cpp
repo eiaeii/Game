@@ -30,8 +30,7 @@ bool IThread::Stop()
 {
 	// ÉèÖÃÏß³ÌÍ£Ö¹
 	this->SetStatus(ThreadStatus::THREAD_STATUS_EXITING);
-
-	this->SetStatus(ThreadStatus::THREAD_STATUS_READY);
+	this->BeginStop();
 
 	return true;
 }
@@ -54,7 +53,6 @@ void IThread::ThreadFunction(void *pParm)
 		}
 		else
 		{
-			pThread->BeginStop();
 			break;
 		}
 	}

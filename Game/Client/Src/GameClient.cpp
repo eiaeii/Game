@@ -16,14 +16,14 @@ bool CGameClient::InitClient()
 	m_pZmqContext = zmq_ctx_new();
 	if (nullptr == m_pZmqContext)
 	{
-		printf("[Error]zmq_ctx_new Ê§°Ü! Function:%s, Line:%d\n", __FUNCTION__, __LINE__);
+		SaveAssertLog("zmq_ctx_new Ê§°Ü");
 		return false;
 	}
 
 	m_pZmqSocket = zmq_socket(m_pZmqContext, ZMQ_DEALER);
 	if (nullptr == m_pZmqSocket)
 	{
-		printf("[Error]zmq_socket Ê§°Ü! Function:%s, Line:%d\n", __FUNCTION__, __LINE__);
+		SaveAssertLog("zmq_socket Ê§°Ü");
 		return false;
 	}
 
@@ -31,7 +31,7 @@ bool CGameClient::InitClient()
 	int rc = zmq_connect(m_pZmqSocket, "tcp://localhost:5555");
 	if (rc < 0)
 	{
-		printf("error in zmq_connect: %s\n", zmq_strerror(errno));
+		SaveAssertLog("error in zmq_connect, return:%d, error msg:%s", rc, zmq_strerror(errno));
 		return false;
 	}
 	
@@ -48,11 +48,9 @@ void CGameClient::ProcessLogic()
 	int rc = zmq_msg_recv(&m_zmqMsg, m_pZmqSocket, 0);
 	if (rc < 0)
 	{
-		printf("error in zmq_msg_recv: %s\n", zmq_strerror(errno));
+		SaveAssertLog("error in zmq_msg_recv, return:%d, error msg:%s", rc, zmq_strerror(errno));
 		return;
 	}
-
-	printf("ProcessLogic recvmsg\n");
 }
 
 bool CGameClient::BeginStop()
@@ -69,7 +67,7 @@ void CGameClient::SendMsg(const char *pMsg, size_t nLength)
 	int rc = zmq_send(m_pZmqSocket, pMsg, nLength, 0);
 	if (rc < 0)
 	{
-		printf("error in zmq_send: %s\n", zmq_strerror(errno));
+		SaveAssertLog("error in zmq_send, return:%d, error msg:%s", rc, zmq_strerror(errno));
 		return;
 	}
 }
