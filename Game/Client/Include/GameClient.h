@@ -4,7 +4,13 @@
 #include "Singleton.hpp"
 #include "IThread.h"
 #include "Log.h"
+
+#ifdef __cplusplus
+extern "C"
+{
 #include "zmq.h"
+}
+#endif
 
 class CGameClient : public IThread,
 	public CSingleton<CGameClient>
