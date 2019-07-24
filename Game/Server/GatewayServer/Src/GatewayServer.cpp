@@ -57,17 +57,24 @@ bool CGatewayServer::Start()
 
 void CGatewayServer::ProcessLogic()
 {
-	/*int rc = zmq_msg_recv(&m_zmqMsg, m_pZmqSocket, 0);
-	if (rc < 0)
-	{
-		printf("error in zmq_msg_recv: %s\n", zmq_strerror(errno));
-		return;
-	}
+	int rc = 0;
 
-	char szMsg[128] = { 0 };
-	memcpy(szMsg, zmq_msg_data(&m_zmqMsg), zmq_msg_size(&m_zmqMsg));
-	printf(szMsg);*/
-	s_dump();
+	zmq_msg_t message;
+	rc = zmq_msg_init(&message);
+
+	int size = zmq_msg_recv(&message, m_pZmqSocket, 0);
+	printf("-------------recv_begin-------------\n");
+	uint32_t nMsgFd = 0;
+	memcpy(&nMsgFd, zmq_msg_data(&message), sizeof(nMsgFd));
+	printf("msg_from:%d\n", nMsgFd);
+
+	size = zmq_msg_recv(&message, m_pZmqSocket, 0);
+	char szMsg[1024] = { 0 };
+	memcpy(szMsg, zmq_msg_data(&message), size);
+	printf("msg:%s\n", szMsg);
+
+	rc = zmq_msg_close(&message);
+	printf("-------------recv_end-------------\n");
 }
 
 bool CGatewayServer::BeginStop()
@@ -79,27 +86,6 @@ bool CGatewayServer::BeginStop()
 	return true;
 }
 
-void CGatewayServer::s_dump()
-{
-	int rc = 0;
-
-	zmq_msg_t message1;
-	zmq_msg_t message2;
-	rc = zmq_msg_init(&message1);
-	rc = zmq_msg_init(&message2);
-
-	//  Dump the message as text or binary
-
-	int size = zmq_msg_recv(&message1, m_pZmqSocket, 0);
-	size = zmq_msg_recv(&message2, m_pZmqSocket, 0);
-
-	zmq_msg_send(&message1, m_pZmqSocket, ZMQ_SNDMORE);
-	zmq_msg_send(&message2, m_pZmqSocket, 0);
-
-	zmq_msg_close(&message1);
-	zmq_msg_close(&message2);
-}
-
 void CGatewayServer::MonitorFunction()
 {
 	static char addr[1025];
@@ -107,39 +93,35 @@ void CGatewayServer::MonitorFunction()
 	printf("starting monitor...\n");
 	void *s = zmq_socket(m_pZmqContext, ZMQ_PAIR);
 	rc = zmq_connect(s, "inproc://monitor.rep");
-	zmq_event_t zmqEvent;
-	while (!read_msg(s, &zmqEvent, addr))
+
+	while (true)
 	{
-		printf("monitor socket event %d\n", zmqEvent.event);
-		printf("monitor socket value %d\n", zmqEvent.value);
-		printf("monitor socket address %s\n", addr);
+		zmq_msg_t message;
+		rc = zmq_msg_init(&message);
 
+		int size = zmq_msg_recv(&message, s, 0);
+		printf("-------------event_begin-------------\n");
+		uint8_t *pMsg = (uint8_t*)zmq_msg_data(&message);
+		zmq_event_t event_t;
+		memcpy(&event_t.eventID, pMsg, sizeof(event_t.eventID));
+		memcpy(&event_t.eventValue, pMsg + sizeof(event_t.eventID), sizeof(event_t.eventValue));
+		printf("event_id:%x\n", event_t.eventID);
+		printf("event_value:%d\n", event_t.eventValue);
+
+
+		/*zmq_event_t *pEvent = (zmq_event_t *)zmq_msg_data(&message);
+		printf("event_id:%x\n", pEvent->eventID);
+		printf("event_value:%d\n", pEvent->eventValue);*/
+
+		char szAddress[128] = { 0 };
+		size = zmq_msg_recv(&message, s, 0);
+		memcpy(szAddress, zmq_msg_data(&message), size);
+		printf("event_address:%s\n", szAddress);
+
+		printf("-------------event_end-------------\n");
+		rc = zmq_msg_close(&message);
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
+
 	zmq_close(s);
-}
-
-int CGatewayServer::read_msg(void* s, zmq_event_t* event, char* ep)
-{
-	int rc;
-	zmq_msg_t msg1;  // binary part
-	zmq_msg_init(&msg1);
-	zmq_msg_t msg2;  //  address part
-	zmq_msg_init(&msg2);
-	rc = zmq_msg_recv(&msg1, s, 0);
-	if (rc == -1 && zmq_errno() == ETERM)
-		return 1;
-
-	rc = zmq_msg_recv(&msg2, s, 0);
-	if (rc == -1 && zmq_errno() == ETERM)
-		return 1;
-
-	// copy binary data to event struct
-	const char* data = (char*)zmq_msg_data(&msg1);
-	memcpy(&(event->event), data, sizeof(event->event));
-	memcpy(&(event->value), data + sizeof(event->event), sizeof(event->value));
-	// copy address part
-	const size_t len = zmq_msg_size(&msg2);
-	ep = (char*)memcpy(ep, zmq_msg_data(&msg2), len);
-	*(ep + len) = 0;
-	return 0;
 }

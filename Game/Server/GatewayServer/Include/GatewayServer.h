@@ -6,11 +6,13 @@
 #include "Log.h"
 #include "zmq.h"
 
+#pragma pack(1)
 struct zmq_event_t
 {
-	unsigned short event = 0;
-	int value = 0;
+	uint16_t eventID = 0;
+	uint32_t eventValue = 0;
 };
+#pragma pack()
 
 class CGatewayServer : public IThread,
 	public CSingleton<CGatewayServer>
@@ -19,13 +21,11 @@ public:
 	~CGatewayServer();
 	bool InitServer();
 	bool Start();
-	void s_dump();
 
 private:
 	void ProcessLogic();
 	bool BeginStop();
 	void MonitorFunction();
-	int read_msg(void* s, zmq_event_t* event, char* ep);
 private:
 
 	void *m_pZmqContext = nullptr;
