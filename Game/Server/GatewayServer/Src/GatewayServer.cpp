@@ -64,8 +64,7 @@ void CGatewayServer::ProcessLogic()
 
 	int size = zmq_msg_recv(&message, m_pZmqSocket, 0);
 	printf("-------------recv_begin-------------\n");
-	uint32_t nMsgFd = 0;
-	memcpy(&nMsgFd, zmq_msg_data(&message), sizeof(nMsgFd));
+	uint32_t nMsgFd = zmq_msg_get(&message, ZMQ_SRCFD);
 	printf("msg_from:%d\n", nMsgFd);
 
 	size = zmq_msg_recv(&message, m_pZmqSocket, 0);
