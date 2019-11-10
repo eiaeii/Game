@@ -1,27 +1,28 @@
-{
-  // 请参阅 https://go.microsoft.com//fwlink//?linkid=834763 了解有关此文件的详细信息。
+﻿{
   "configurations": [
     {
       "name": "x64-Debug",
-      "generator": "Visual Studio 15 2017 Win64",
+      "generator": "Visual Studio 16 2019 Win64",
       "configurationType": "Debug",
-      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "inheritEnvironments": [ "msvc_x86_x64" ],
       "buildRoot": "${projectDir}\\..\\Build\\${name}",
       "installRoot": "${projectDir}\\..\\Install\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
-      "ctestCommandArgs": ""
+      "ctestCommandArgs": "",
+      "variables": []
     },
     {
       "name": "x64-Release",
-      "generator": "Visual Studio 15 2017 Win64",
+      "generator": "Visual Studio 16 2019 Win64",
       "configurationType": "RelWithDebInfo",
       "inheritEnvironments": [ "msvc_x64_x64" ],
       "buildRoot": "${projectDir}\\..\\Build\\${name}",
       "installRoot": "${projectDir}\\..\\Install\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
-      "ctestCommandArgs": ""
+      "ctestCommandArgs": "",
+      "variables": []
     },
     {
       "name": "Linux-Debug",
@@ -38,7 +39,8 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
-      "inheritEnvironments": [ "linux-x64" ]
+      "inheritEnvironments": [ "linux-x64" ],
+      "variables": []
     },
     {
       "name": "Linux-Release",
@@ -55,7 +57,8 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
-      "inheritEnvironments": [ "linux-x64" ]
+      "inheritEnvironments": [ "linux-x64" ],
+      "variables": []
     }
   ]
 }

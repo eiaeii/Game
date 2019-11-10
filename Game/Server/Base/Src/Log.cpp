@@ -17,9 +17,9 @@ CLog::~CLog()
 
 bool CLog::Init()
 {
-	std::experimental::filesystem::create_directory("Log");
+	std::filesystem::create_directory("Log");
 
-	auto curPath = std::experimental::filesystem::current_path();
+	auto curPath = std::filesystem::current_path();
 	m_strProcessName = curPath.stem().string();
 
 	m_vecLogFile.resize(Log_Num);
