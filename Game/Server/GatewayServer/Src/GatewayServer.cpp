@@ -59,20 +59,30 @@ void CGatewayServer::ProcessLogic()
 {
 	int rc = 0;
 
-	zmq_msg_t message;
-	rc = zmq_msg_init(&message);
+	// 消息地址帧
+	zmq_msg_t msgAddress;
+	rc = zmq_msg_init(&msgAddress);
 
-	int size = zmq_msg_recv(&message, m_pZmqSocket, 0);
+	int size = zmq_msg_recv(&msgAddress, m_pZmqSocket, 0);
 	printf("-------------recv_begin-------------\n");
-	uint32_t nMsgFd = zmq_msg_get(&message, ZMQ_SRCFD);
+	uint32_t nMsgFd = zmq_msg_get(&msgAddress, ZMQ_SRCFD);
 	printf("msg_from:%d\n", nMsgFd);
 
+	// 消息内容
+	zmq_msg_t message;
+	rc = zmq_msg_init(&message);
 	size = zmq_msg_recv(&message, m_pZmqSocket, 0);
 	char szMsg[1024] = { 0 };
 	memcpy(szMsg, zmq_msg_data(&message), size);
 	printf("msg:%s\n", szMsg);
 
-	rc = zmq_msg_close(&message);
+	// 将消息返回
+	zmq_msg_send(&msgAddress, m_pZmqSocket, ZMQ_SNDMORE);
+	zmq_msg_send(&message, m_pZmqSocket, 0);
+
+	zmq_msg_close(&msgAddress);
+	zmq_msg_close(&message);
+
 	printf("-------------recv_end-------------\n");
 }
 

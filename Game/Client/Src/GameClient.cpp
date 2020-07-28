@@ -51,6 +51,11 @@ void CGameClient::ProcessLogic()
 		SaveAssertLog("error in zmq_msg_recv, return:%d, error msg:%s", rc, zmq_strerror(errno));
 		return;
 	}
+
+	char szMsg[1024] = { 0 };
+	auto nSize = zmq_msg_size(&m_zmqMsg);
+	memcpy(szMsg, zmq_msg_data(&m_zmqMsg), nSize);
+	printf("msg:%s\n", szMsg);
 }
 
 bool CGameClient::BeginStop()
