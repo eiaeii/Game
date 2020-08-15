@@ -1,0 +1,8 @@
+zeromq:
+1、用vs 编译 zero 时，收到拉下cpp文件夹到工程里，因为有一些cpp文件没有包含，链接静态库会报错
+2、wepoll：如果使用，文件要拉进项目编译，不然会报无法解析的外部符号 epoll_create 之类的错误，wepoll.cpp 不使用预编译头
+3、添加宏
+	ZMQ_IOTHREAD_POLLER_USE_EPOLL
+	ZMQ_POLL_BASED_ON_POLL
+	ZMQ_USE_CV_IMPL_STL11
+
