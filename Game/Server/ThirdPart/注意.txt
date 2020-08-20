@@ -5,4 +5,5 @@ zeromq:
 	ZMQ_IOTHREAD_POLLER_USE_EPOLL
 	ZMQ_POLL_BASED_ON_POLL
 	ZMQ_USE_CV_IMPL_STL11
+4、添加新文件，编译提示链接问题，可能是文件没有添加，刷新CMakeLists
 

@@ -1,7 +1,7 @@
 #ifndef _Log_HPP
 #define _Log_HPP
 
-#include "TimeManager.h"
+#include "TimeManager.hpp"
 #include "CommonDefine.h"
 #include <vector>
 #include <string>

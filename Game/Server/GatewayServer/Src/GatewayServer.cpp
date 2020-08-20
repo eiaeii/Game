@@ -55,6 +55,17 @@ bool CGatewayServer::Start()
 	return IThread::Start();
 }
 
+void CGatewayServer::OnTimer(uint32_t nTimerID)
+{
+	switch (nTimerID)
+	{
+	case 1:
+		break;
+	default:
+		break;
+	}
+}
+
 void CGatewayServer::ProcessLogic()
 {
 	int rc = 0;

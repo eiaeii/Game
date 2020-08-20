@@ -365,15 +365,15 @@ MT_MemPool * MT_Allocator::TLS_GetMemPool()
 
 void* MT_Alloc(size_t nSize)
 {
-	return MT_Allocator::GetInstance().Allocate(nSize);
+	return MT_Allocator::GetGetInstance().Allocate(nSize);
 }
 
 void* MT_ReAlloc(void* p, size_t nSize)
 {
-	return MT_Allocator::GetInstance().Reallocate(p, nSize);
+	return MT_Allocator::GetGetInstance().Reallocate(p, nSize);
 }
 
 void MT_Free(void* p)
 {
-	MT_Allocator::GetInstance().Deallocate(p);
+	MT_Allocator::GetGetInstance().Deallocate(p);
 }

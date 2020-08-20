@@ -1,7 +1,6 @@
-#ifndef _Log_HPP
-#define _Log_HPP
+#pragma once
 
-#include "TimeManager.h"
+#include "TimeManager.hpp"
 #include "CommonDefine.h"
 #include <vector>
 #include <string>
@@ -67,6 +66,4 @@ SERVER_API CLog* GetLogSystem();
 //传入的msgLog必须是字符串
 #define SaveDebugLog(msgLog, ...)	(GetLogSystem()->SaveLogEx(CLog::Log_Debug, __FILE__, __FUNCTION__, __LINE__, std::this_thread::get_id(), msgLog, ##__VA_ARGS__))
 #define SaveAssertLog(msgLog, ...)	(GetLogSystem()->SaveLogEx(CLog::Log_Assert, __FILE__, __FUNCTION__, __LINE__, std::this_thread::get_id(), msgLog, ##__VA_ARGS__))
-
-#endif // _Log_HPP
 

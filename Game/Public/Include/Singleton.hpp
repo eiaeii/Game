@@ -12,33 +12,33 @@ template <typename T, bool mustDelete = true>
 class CSingleton
 {
 public:
-	static T* Instance()
+	static T* GetInstance()
 	{
-		if (nullptr == m_spInstance)
-			m_spInstance = new T;
+		if (nullptr == m_spGetInstance)
+			m_spGetInstance = new T;
 
-		return m_spInstance;
+		return m_spGetInstance;
 	}
 
 protected:
 	CSingleton()
 	{
 		if (mustDelete)
-			atexit(CSingleton::DestroyInstance);
+			atexit(CSingleton::DestroyGetInstance);
 	}
 
-	static void DestroyInstance()
+	static void DestroyGetInstance()
 	{
-		if (nullptr != m_spInstance && mustDelete)
+		if (nullptr != m_spGetInstance && mustDelete)
 		{
-			delete m_spInstance;
-			m_spInstance = nullptr;
+			delete m_spGetInstance;
+			m_spGetInstance = nullptr;
 		}
 	}
 private:
-	static T* m_spInstance;
+	static T* m_spGetInstance;
 };
 
-template<typename T, bool mustDelete> T* CSingleton<T, mustDelete>::m_spInstance = nullptr;
+template<typename T, bool mustDelete> T* CSingleton<T, mustDelete>::m_spGetInstance = nullptr;
 
 #endif // _Singleton_HPP

@@ -1,5 +1,4 @@
-#ifndef _Thread_HPP
-#define _Thread_HPP
+#pragma once
 
 #include <thread>
 #include <chrono>
@@ -53,6 +52,3 @@ private:
 	std::atomic<ThreadStatus> m_btStatus = { ThreadStatus::THREAD_STATUS_READY };
 	std::chrono::milliseconds m_sleepTime = std::chrono::milliseconds(1);
 };
-
-#endif // _Thread_HPP
-

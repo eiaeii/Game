@@ -5,13 +5,13 @@
 
 bool StarServer()
 {
-	if (!CGatewayServer::Instance()->InitServer())
+	if (!CGatewayServer::GetInstance()->InitServer())
 	{
 		SaveAssertLog("GatewayServer ³õÊ¼»¯Ê§°Ü£¡ Function:%s, Line:%d", __FUNCTION__, __LINE__);
 		return false;
 	}
 
-	if (!CGatewayServer::Instance()->Start())
+	if (!CGatewayServer::GetInstance()->Start())
 	{
 		SaveAssertLog("GatewayServer Æô¶¯Ê§°Ü£¡ Function:%s, Line:%d", __FUNCTION__, __LINE__);
 		return false;
@@ -31,7 +31,7 @@ bool StarServer()
 
 		if (strCMD == "exit")
 		{
-			CGatewayServer::Instance()->Stop();
+			CGatewayServer::GetInstance()->Stop();
 			break;
 		}
 	}

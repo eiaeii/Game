@@ -94,7 +94,7 @@ void CLog::SaveLogEx(unsigned char btLogType, const char * pszFile, const char *
 	ss << szTemLogFormat << "\n";
 	ss << "日志信息：\n";
 	ss << "\t" << pszFile << ":" << unLine << ":" << "in function '" << pszFunction << "'\n";
-	ss << "\tThread:" << threadID << "  Time:" << CTimeManager::Instance()->GetYYYYMMDDHHMMSSString() << "\n\n";
+	ss << "\tThread:" << threadID << "  Time:" << CTimeManager::GetInstance()->GetYYYYMMDDHHMMSSString() << "\n\n";
 	
 	auto strLog = ss.str();
 
@@ -165,7 +165,7 @@ void CLog::FlushLogToFile(unsigned char btLogType)
 		if (nullptr == m_LogCache[btLogType] || 0 == m_LogPos)
 			return;
 
-		strFile = m_vecLogFile[btLogType] + m_strProcessName + "_" + CTimeManager::Instance()->GetYYYYMMDDString() + ".log";
+		strFile = m_vecLogFile[btLogType] + m_strProcessName + "_" + CTimeManager::GetInstance()->GetYYYYMMDDString() + ".log";
 		FILE *pFile = nullptr;
 #ifdef _WINDOWS
 		fopen_s(&pFile, strFile.c_str(), "a+");
@@ -194,7 +194,7 @@ void CLog::FlushLogToFile(unsigned char btLogType)
 			if (nullptr == m_LogCache[i] || 0 == m_LogPos)
 				continue;
 
-			strFile = m_vecLogFile[i] + m_strProcessName + "_" + CTimeManager::Instance()->GetYYYYMMDDString() + ".log";
+			strFile = m_vecLogFile[i] + m_strProcessName + "_" + CTimeManager::GetInstance()->GetYYYYMMDDString() + ".log";
 			FILE *pFile = nullptr;
 #ifdef _WINDOWS
 			fopen_s(&pFile, strFile.c_str(), "a+");

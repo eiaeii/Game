@@ -5,6 +5,7 @@
 #include "IThread.h"
 #include "Log.h"
 #include "zmq.h"
+#include "TimerAxis.hpp"
 
 #pragma pack(1)
 struct zmq_event_t
@@ -14,13 +15,14 @@ struct zmq_event_t
 };
 #pragma pack()
 
-class CGatewayServer : public IThread,
+class CGatewayServer : public IThread, public ITimerHandler,
 	public CSingleton<CGatewayServer>
 {
 public:
 	~CGatewayServer();
 	bool InitServer();
 	bool Start();
+	void OnTimer(uint32_t nTimerID);
 
 private:
 	void ProcessLogic();

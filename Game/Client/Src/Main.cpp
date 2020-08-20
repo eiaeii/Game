@@ -5,13 +5,13 @@
 
 bool StarClient()
 {
-	if (!CGameClient::Instance()->InitClient())
+	if (!CGameClient::GetInstance()->InitClient())
 	{
 		SaveAssertLog("Client ³õÊ¼»¯Ê§°Ü£¡ Function:%s, Line:%d", __FUNCTION__, __LINE__);
 		return false;
 	}
 
-	if (!CGameClient::Instance()->Start())
+	if (!CGameClient::GetInstance()->Start())
 	{
 		SaveAssertLog("Client Æô¶¯Ê§°Ü£¡ Function:%s, Line:%d", __FUNCTION__, __LINE__);
 		return false;
@@ -31,12 +31,12 @@ bool StarClient()
 
 		if (strCMD == "exit")
 		{
-			CGameClient::Instance()->Stop();
+			CGameClient::GetInstance()->Stop();
 			break;
 		}
 		else
 		{
-			CGameClient::Instance()->SendMsg(strCMD.c_str(), strCMD.length());
+			CGameClient::GetInstance()->SendMsg(strCMD.c_str(), strCMD.length());
 		}
 	}
 

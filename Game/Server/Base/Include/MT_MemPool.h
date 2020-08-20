@@ -1,5 +1,4 @@
-﻿#ifndef __MULTI_THREAD_MEMORY_POOL_EDITION_2_H__
-#define __MULTI_THREAD_MEMORY_POOL_EDITION_2_H__
+﻿#pragma once
 
 #include <assert.h>
 #include <thread>
@@ -165,10 +164,10 @@ protected:
 class MT_Allocator/* : public rkt::Singleton<MT_Allocator>*/
 {
 public:
-	static MT_Allocator& GetInstance()
+	static MT_Allocator& GetGetInstance()
 	{
-		static MT_Allocator s_instance;
-		return s_instance;
+		static MT_Allocator s_GetInstance;
+		return s_GetInstance;
 	}
 
 	// 分配内存
@@ -194,5 +193,3 @@ public:
 };
 
 #pragma pack()
-
-#endif//__MULTI_THREAD_MEMORY_POOL_EDITION_2_H__
