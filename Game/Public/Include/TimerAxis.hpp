@@ -39,13 +39,17 @@
 * 推荐检查频率 : 16(ms) 
 * 推荐时间刻度 : 64(ms)
 */
-#define CHECK_FREQUENCY	        16	//精确到16ms
-#define TIME_GRID				64
+#define CHECK_FREQUENCY	        16 //精确到16ms
+#define TIME_GRID_INTERVAL		64 //时间轴每格长度
 
 // 时间轴长度
 #define TIME_AXIS_LENGTH		720000
 #define INVALID_TIMER			0xFFFFFFFF
-#define INFINITY_CALL			0xFFFFFFFF
+#define TIMER_INFINITY_CALL		0xFFFFFFFF
+
+// 性能警报间隔
+#define TIMER_WARNING_INTERVAL	5000
+#define SERIOUS_TIMER_WARNING_INTERVAL 30000
 
 // ---------------------------------------------------------------------------
 // Name	: 定时器触发后的处理接口
@@ -63,8 +67,6 @@ public:
 	@return				: empty
 	*/
 	virtual void OnTimer(uint32_t nTimerID) = 0;
-
-private:
 
 	/**
 	@purpose          : 取得存放定时器内部数据的指针
@@ -88,12 +90,12 @@ class CTimerAxist : public CSingleton<CTimerAxist>
 {
 	struct Timer
 	{
-		uint32_t nTimerID; // 定时器ID
-		uint32_t nInterval; // 触发间隔
-		uint32_t nCallTimes;// 触发次数
-		uint64_t nLastCallTick;// 最后一次调用的时间
-		uint32_t nGridIndex;// 所在的时间刻度
-		ITimerHandler* pHandler; // 定时器回调接口
+		uint32_t nTimerID = 0; // 定时器ID
+		uint32_t nInterval = 0; // 触发间隔
+		uint32_t nCallTimes = 0;// 触发次数
+		uint64_t nLastCallTick = 0;// 最后一次调用的时间
+		uint32_t nGridIndex = 0;// 所在的时间刻度
+		ITimerHandler* pHandler = nullptr; // 定时器回调接口
 		std::string strDebugInfo; // 调试信息
 		std::list <Timer*>::iterator itrPos; // 在时间刻度中的iterator，加快搜索
 	};
@@ -107,14 +109,15 @@ public:
 	virtual ~CTimerAxist();
 
 public:
-	bool SetTimer(uint32_t nTimerID, uint32_t nInterval, ITimerHandler* pHandler, uint32_t nCallTimes = INFINITY_CALL, const char* pszDebugInfo = nullptr);
+	bool SetTimer(uint32_t nTimerID, uint32_t nInterval, ITimerHandler* pHandler, uint32_t nCallTimes = TIMER_INFINITY_CALL, const char* pszDebugInfo = nullptr);
 	bool KillTimer(uint32_t nTimerID, ITimerHandler* pHandler);
 	void KillTimer(ITimerHandler* pHandler);
+	void CheckTimer();
 
 private:
 	TIMER_AXIS m_vecTimerAxis;
-	uint64_t m_nLastCheckTick; // 最后一次检测的时间
-	uint64_t m_nCurRunTime; // 当前运行的时间
-	uint64_t m_InitTime; // 时间轴初始时间
-	uint32_t m_nTimerCount; // 定时器个数
+	uint64_t m_nLastCheckTick = 0; // 最后一次检测的时间
+	uint64_t m_nCurRunTime = 0; // 当前运行的时间
+	uint64_t m_InitTime = 0; // 时间轴初始时间
+	uint32_t m_nTimerCount = 0; // 定时器个数
 };
