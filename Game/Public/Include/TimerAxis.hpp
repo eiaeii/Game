@@ -14,7 +14,7 @@
 
 /*
 *  问题:
-*  1.OnCheck调用频率大于单位时间刻度时怎么处理?
+*  1.CheckTimer调用频率大于单位时间刻度时怎么处理?
 *  2.多线程支持
 *  3.长Timer怎么处理?
 *  4.需要支持调试功能
@@ -42,7 +42,11 @@
 #define CHECK_FREQUENCY	        16 //精确到16ms
 #define TIME_GRID_INTERVAL		64 //时间轴每格长度
 
-// 时间轴长度
+/*
+* 时间轴长度，数值越大，时间刻度越多，这影响一定时间内，同一定时器被检测的次数
+* 举个例子：
+* 刻度设置为12分钟=720000毫秒，间隔1小时的定时器，在1小时内会被检测5次
+*/
 #define TIME_AXIS_LENGTH		720000
 #define INVALID_TIMER			0xFFFFFFFF
 #define TIMER_INFINITY_CALL		0xFFFFFFFF

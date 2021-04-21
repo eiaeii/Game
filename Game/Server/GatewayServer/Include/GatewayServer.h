@@ -27,12 +27,12 @@ public:
 private:
 	void ProcessLogic();
 	bool BeginStop();
-	void MonitorFunction();
 private:
 
 	void *m_pZmqContext = nullptr;
 	void *m_pZmqSocket = nullptr;
-	zmq_msg_t m_zmqMsg;
+	void* m_pMonitorSocket = nullptr;
+	zmq_pollitem_t m_tPolloer[2] = { 0 };
 };
 
 #endif // _GATEWAYSERVER_H
