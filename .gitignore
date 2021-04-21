@@ -4,3 +4,9 @@
 
 /Build/x64-Debug
 /Game/.vs
+/Bin/Client
+/Bin/Server/GatewayServer.pdb
+/Bin/Server/GatewayServer.ilk
+/Bin/Server/GatewayServer.exe
+/Game/Client/Lib
+/Game/Server/Lib
